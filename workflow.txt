@@ -1,0 +1,10 @@
+Git workflow:
+
+1. Make sure your master branch is up to date. Hit F5 to refresh and sync if necessary.
+2. Create a local branch on which to make your changes. This does not need to be published to the server.
+3. Make your changes to the project while on the local branch.
+4. Ensure that the project still compiles as a .dll in Visual Studio.
+5. Commit changes to local branch.
+6. Merge your local branch into the master branch. Make sure it says Master in the output box.
+7. Sync the master branch with the server.
+8. Delete local branch. 
