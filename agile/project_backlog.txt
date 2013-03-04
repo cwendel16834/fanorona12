@@ -41,3 +41,5 @@ change background
 user settings
 mute sounds
 select game type
+set up GitHub
+set up java project

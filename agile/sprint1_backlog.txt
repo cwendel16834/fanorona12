@@ -1,0 +1,11 @@
+
+set up java project
+set up GitHub
+create Board class
+create Piece classs
+create VisualBoard class
+make interface window for scoreboard and new game button
+show title screen on launch
+show instructions on how to play
+display board to user
+populate board
