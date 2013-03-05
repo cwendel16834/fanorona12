@@ -1,5 +1,5 @@
 create Board class
-create Piece classs
+create Piece class
 create VisualBoard class
 show title screen on launch
 show instructions on how to play
