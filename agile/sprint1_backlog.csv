@@ -1,0 +1,11 @@
+id,Task,Est. Time
+1,create Board class,30
+2,create Piece class,30
+3,create VisualBoard class,60
+4,show title screen on launch,120
+5,show instructions on how to play,100
+10,populate board,30
+30,make interface window for scoreboard and new game button,60
+44,set up GitHub,30
+45,set up java project,30
+25,display board to user,60
