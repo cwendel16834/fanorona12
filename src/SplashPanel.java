@@ -24,6 +24,7 @@ public class SplashPanel extends JFrame
 	public SplashPanel()
 	{
 		try {
+			setUndecorated(true); 
 			img = ImageIO.read(new File("imgs/SplashScreen.jpg"));
 			label = new JLabel();
 			label.setIcon(new ImageIcon(img));
