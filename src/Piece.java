@@ -1,6 +1,12 @@
 package twelve.team;
 
+import java.awt.Image;
+
 public class Piece {
+	
+	public Image image;
+	public int x;
+	public int y;
 	
 	public enum Team { BLACK, WHITE }
 	
