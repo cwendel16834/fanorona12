@@ -4,6 +4,7 @@
  */
 package twelve.team;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -63,8 +64,30 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     			g2.drawImage(boardPieces[i][j].image, boardPieces[i][j].x-boardPieces[i][j].image.getWidth(null)/2, boardPieces[i][j].y-boardPieces[i][j].image.getHeight(null)/2, null);
     		}
     	}
+    	createGrid(boardPanel.getGraphics(), boardPanel.getWidth(), boardPanel.getHeight());
     	//boardBackground.setVisible(false);
     	//boardPanel.repaint();
+    }
+    
+    public void createGrid(Graphics g, int width, int height){
+    	//(p.x-49)/62 + "," + (p.y-24)/62
+    	int last = -1;
+    	g.setColor(Color.red);
+    	for(int i=0;i<width;i++){
+    		int j = ((i-17)/62);
+    		if(j != last){
+    			g.drawLine(i, 0, i, height);
+    			last = j;
+    		}
+    	}
+    	last = -1;
+    	for(int i=0;i<height;i++){
+    		int j = ((i+8)/62);
+    		if(j != last){
+    			g.drawLine(0, i, width, i);
+    			last = j;
+    		}
+    	}
     }
 
     /**
@@ -236,19 +259,20 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     		System.out.println("Board does not contain point!");
     		return null;
     	}
-    	System.out.println(p);
-    	System.out.println("clicked Point (" + (p.x-49)/62 + "," + (p.y-24)/62 + ")");
-    	//System.out.println("click ("+p.x+","+p.y+")");
-    	Point closest = new Point(0,0);
-    	for(int i=0;i<boardPieces.length;i++){
-    		for(int j=0;j<boardPieces[i].length;j++){
-    			Point piece = piecePosition(i, j);
-    			//System.out.println("piece "+ i+"," + j +" ("+piece.x+","+piece.y+")");
-    			if(distance(piecePosition(closest.x, closest.y), piece) > distance(p, piece)){
-    				closest = new Point(i, j);
-    			}
-    		}
-    	}
+//    	System.out.println(p);
+//    	System.out.println("clicked Point (" + (p.x-49)/62 + "," + (p.y-24)/62 + ")");
+//    	//System.out.println("click ("+p.x+","+p.y+")");
+//    	Point closest = new Point(0,0);
+//    	for(int i=0;i<boardPieces.length;i++){
+//    		for(int j=0;j<boardPieces[i].length;j++){
+//    			Point piece = piecePosition(i, j);
+//    			//System.out.println("piece "+ i+"," + j +" ("+piece.x+","+piece.y+")");
+//    			if(distance(piecePosition(closest.x, closest.y), piece) > distance(p, piece)){
+//    				closest = new Point(i, j);
+//    			}
+//    		}
+//    	}
+    	Point closest = new Point(((p.x-17)/62),((p.y+8)/62));
     	if(boardPieces[closest.x][closest.y] == null){
     		return null;
     	}
