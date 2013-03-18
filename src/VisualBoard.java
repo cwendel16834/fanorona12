@@ -9,6 +9,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -223,6 +225,15 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(boardPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
+        
+        helpButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+                new HelpPanel().setVisible(true);
+				
+			}
+		});
 
         boardPanel.addMouseListener(this);
         boardPanel.addMouseMotionListener(this);
