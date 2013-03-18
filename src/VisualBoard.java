@@ -227,6 +227,12 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
                 .addComponent(boardPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
 
+        newGameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetBoard();
+            }
+        });
+        
         boardPanel.addMouseListener(this);
         boardPanel.addMouseMotionListener(this);
         pack();
@@ -249,7 +255,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     			}
     		}
     	}
-    	
     	repaint();
     }
     
@@ -262,24 +267,10 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     		System.out.println("Board does not contain point!");
     		return null;
     	}
-//    	System.out.println(p);
-//    	System.out.println("clicked Point (" + (p.x-49)/62 + "," + (p.y-24)/62 + ")");
-//    	//System.out.println("click ("+p.x+","+p.y+")");
-//    	Point closest = new Point(0,0);
-//    	for(int i=0;i<boardPieces.length;i++){
-//    		for(int j=0;j<boardPieces[i].length;j++){
-//    			Point piece = piecePosition(i, j);
-//    			//System.out.println("piece "+ i+"," + j +" ("+piece.x+","+piece.y+")");
-//    			if(distance(piecePosition(closest.x, closest.y), piece) > distance(p, piece)){
-//    				closest = new Point(i, j);
-//    			}
-//    		}
-//    	}
     	Point closest = new Point(((p.y+8)/62),((p.x-17)/62));
     	if(boardPieces[closest.x][closest.y] == null){
     		return null;
     	}
-    	//System.out.println("closest ("+closest.x+","+closest.y+")");
     	return closest;
     }
     
@@ -318,6 +309,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new VisualBoard().setVisible(true);
+                
             }
         });
     }
