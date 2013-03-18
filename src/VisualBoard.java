@@ -326,6 +326,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new VisualBoard().setVisible(true);
+                new SplashPanel().setVisible(true); //put a timer 
             }
         });
     }
