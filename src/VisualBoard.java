@@ -5,10 +5,12 @@
 package twelve.team;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -298,6 +300,25 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+    	
+    	//~~~~START LOADING SCREEN ~~~~
+    	Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    	SplashPanel splashscreen = new SplashPanel();
+    	int x = (dim.width - splashscreen.getWidth())/2;
+    	int y = (dim.height - splashscreen.getHeight())/2;
+    	splashscreen.setLocation(x,y);
+    	splashscreen.setVisible(true);
+    	long StartTime = System.currentTimeMillis();
+    	long Timer = 5000;
+    	long ElapsedTime = System.currentTimeMillis()- StartTime;
+    	while(ElapsedTime <= Timer)
+    	{
+    		ElapsedTime = System.currentTimeMillis() - StartTime;
+    	}
+    	splashscreen.setVisible(false);
+    	
+    	// ~~~~ LOADING SCREEN DONE ~~~~~~
+    	
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -320,7 +341,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new VisualBoard().setVisible(true);
-                new SplashPanel().setVisible(true); //put a timer 
             }
         });
     }
