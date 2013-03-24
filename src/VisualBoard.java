@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -271,8 +270,8 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     	repaint();
     }
     
-    public Point piecePosition(int y, int x){
-    	return new Point(62*x + 49, 62*y + 24);
+    public Point piecePosition(int x, int y){
+    	return new Point(62*y + 49, 62*x + 24);
     }
     
     public Point closestPiece(Point p){
@@ -338,13 +337,26 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         //</editor-fold>
 
         /* Create and display the form */
+        final VisualBoard board = new VisualBoard();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VisualBoard().setVisible(true);
+                board.setVisible(true);
             }
         });
+        
+        gameTimer = new GameTimer(15);
+        
+        player1Turn = gameTimer.getTurn();
+        while(!Thread.interrupted()){
+        	if(player1Turn != gameTimer.getTurn()){
+        		player1Turn = gameTimer.getTurn();
+        		board.repaint();
+        	}
+        }
     }
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify     
+    static GameTimer gameTimer;
+    private static boolean player1Turn;
     private JLabel boardBackground;
     private JPanel boardPanel;
     private JLabel currentTurn;
@@ -413,7 +425,15 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		moving = false;
-		statusTextArea.setText("Done moving Piece");
+		Point p = closestPiece(e.getPoint());
+		if(p == null){
+			
+		} else {
+			statusTextArea.setText("Invalid Move");
+			Point origin = piecePosition(movingPiece.x, movingPiece.y);
+			boardPieces[movingPiece.x][movingPiece.y].x = origin.x;
+			boardPieces[movingPiece.x][movingPiece.y].y = origin.y;
+		}
 		repaint();
 	}
 }
