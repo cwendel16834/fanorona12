@@ -58,6 +58,8 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     public void paint(Graphics g){
     	super.paintComponents(g);
     	
+    	timeLeftLabel.setText("Time Left: " + timeLeft);
+    	
     	Graphics2D g2 = (Graphics2D) boardPanel.getGraphics();
     	for(int i=0;i<boardPieces.length;i++){
     		for(int j=0;j<boardPieces[i].length;j++){
@@ -100,6 +102,10 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
      */             
     private void initComponents() {
     	
+    	turnsPlayed = 0;
+    	player1Wins = 0;
+    	player2Wins = 0;
+    	
     	try {
     		blackPiece = ImageIO.read(new File("imgs/black_piece.png"));
 			whitePiece = ImageIO.read(new File("imgs/white_piece.png"));
@@ -120,6 +126,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         currentTurn = new JLabel();
         statusScrollPane = new JScrollPane();
         statusTextArea = new JTextArea();
+        timeLeftLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -152,15 +159,19 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         newGameButton.setText("New Game");
 
         player1Label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        player1Label.setText("Player 1 Score: x");
+        player1Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        player1Label.setText("Player 1 Score: " + player1Wins);
 
         player2Label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        player2Label.setText("Player 2 Score: x");
+        player2Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        player2Label.setText("Player 2 Score: " + player2Wins);
 
         currentTurnLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        currentTurnLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         currentTurnLabel.setText("Current Turn:");
 
         currentTurn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        currentTurn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         currentTurn.setText("Player 1");
 
         statusTextArea.setEditable(false);
@@ -169,65 +180,61 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         statusTextArea.setRows(5);
         statusTextArea.setText("Starting Game...");
         statusScrollPane.setViewportView(statusTextArea);
+        
+        timeLeftLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        timeLeftLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        timeLeftLabel.setText("Time Left: ");
 
-        GroupLayout layout = new GroupLayout(getContentPane());
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(optionsButton)
                     .addComponent(newGameButton)
                     .addComponent(helpButton))
                 .addGap(18, 18, 18)
-                .addComponent(boardPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(currentTurnLabel, GroupLayout.Alignment.TRAILING)
-                            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(currentTurn)
-                                .addGap(18, 18, 18)))
-                        .addGap(48, 48, 48))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(player2Label))
-                            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(player1Label)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(statusScrollPane, GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))))
+                .addComponent(boardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(player1Label)
+                    .addComponent(player2Label)
+                    .addComponent(currentTurnLabel)
+                    .addComponent(currentTurn)
+                    .addComponent(timeLeftLabel)
+                    .addComponent(statusScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {currentTurn, currentTurnLabel, player1Label, player2Label, statusScrollPane, timeLeftLabel});
+
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(newGameButton)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(optionsButton)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(helpButton)
                 .addGap(94, 94, 94))
-            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(player1Label)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(player2Label)
                 .addGap(28, 28, 28)
                 .addComponent(currentTurnLabel)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(currentTurn)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(statusScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(timeLeftLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(statusScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(boardPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addComponent(boardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         
         helpButton.addActionListener(new ActionListener() {
@@ -337,7 +344,13 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         //</editor-fold>
 
         /* Create and display the form */
+        
         final VisualBoard board = new VisualBoard();
+        
+        x = (dim.width - board.getWidth())/2;
+    	y = (dim.height - board.getHeight())/2;
+    	board.setLocation(x,y);
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 board.setVisible(true);
@@ -348,19 +361,34 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         
         player1Turn = gameTimer.getTurn();
         while(!Thread.interrupted()){
+        	if(timeLeft != gameTimer.timeLeft()){
+        		timeLeft = gameTimer.timeLeft();
+        		board.repaint();
+        	}
+        	
         	if(player1Turn != gameTimer.getTurn()){
         		player1Turn = gameTimer.getTurn();
+        		if(player1Turn){
+        			currentTurn.setText("Player 1");
+        		} else {
+        			currentTurn.setText("Player 2");
+        		}
         		board.repaint();
         	}
         }
     }
     // Variables declaration - do not modify     
     static GameTimer gameTimer;
+    private int player1Wins;
+    private int player2Wins;
     private static boolean player1Turn;
+    private int turnsPlayed;
+    private static int timeLeft;
     private JLabel boardBackground;
     private JPanel boardPanel;
-    private JLabel currentTurn;
+    private static JLabel currentTurn;
     private JLabel currentTurnLabel;
+    private JLabel timeLeftLabel;
     private JButton helpButton;
     private JButton newGameButton;
     private JButton optionsButton;
