@@ -402,6 +402,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     private BufferedImage whitePiece;
     private Point movingPiece;
     private boolean moving;
+    private Point startPosition;
     // End of variables declaration                   
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -442,6 +443,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		Point p = e.getPoint();
+		//get starting position here
 		if((movingPiece = closestPiece(p)) != null){
 			moving = true;
 			statusTextArea.setText("Moving Piece");
@@ -452,6 +454,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
+		// check if the movement was valid using starting position and ending position
 		moving = false;
 		Point p = closestPiece(e.getPoint());
 		if(p == null){
