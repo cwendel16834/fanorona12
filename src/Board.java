@@ -5,12 +5,23 @@ import java.awt.Point;
 public class Board
 {
 	private Piece[][] board;
+	private int rows = 5;
+	private int cols = 9;
+	
 	public Board()
 	{
-		board = new Piece[5][9];
+		board = new Piece[rows][cols];
 		ResetBoard();
 	}
-	
+
+	public Board(int r, int c)
+	{
+		rows = r;
+		cols = c;
+		board = new Piece[rows][cols];
+		ResetBoard();
+	}
+
 	private void ResetBoard()
 	{
 		for(int i = 0; i < board.length; i++)
