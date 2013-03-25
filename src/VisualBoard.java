@@ -296,6 +296,10 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     public double distance(Point a, Point b){
     	return Math.pow((a.x-b.x), 2) + Math.pow(a.y-b.y, 2);
     }
+    
+    public Board getBoard() {
+    	return gameBoard;
+    }
 
     /**
      * @param args the command line arguments
@@ -377,13 +381,22 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         	}
         }
     }
-    // Variables declaration - do not modify     
+    // Variables declaration - do not modify   
+    
+    //logical components -- should not be here, move to gameController
     static GameTimer gameTimer;
-    private int player1Wins;
-    private int player2Wins;
     private static boolean player1Turn;
     private int turnsPlayed;
+    
+    //data for visuals
+    private int player1Wins;
+    private int player2Wins;
     private static int timeLeft;
+    
+    private Board gameBoard;
+    private Piece[][] boardPieces;
+    
+    //visual components
     private JLabel boardBackground;
     private JPanel boardPanel;
     private static JLabel currentTurn;
@@ -396,8 +409,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     private JLabel player2Label;
     private JScrollPane statusScrollPane;
     private JTextArea statusTextArea;
-    private Board gameBoard;
-    private Piece[][] boardPieces;
     private BufferedImage blackPiece;
     private BufferedImage whitePiece;
     private Point movingPiece;
