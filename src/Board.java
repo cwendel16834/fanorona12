@@ -11,7 +11,7 @@ public class Board
 	public Board()
 	{
 		board = new Piece[rows][cols];
-		ResetBoard();
+		resetBoard();
 	}
 
 	public Board(int r, int c)
@@ -19,33 +19,39 @@ public class Board
 		rows = r;
 		cols = c;
 		board = new Piece[rows][cols];
-		ResetBoard();
+		resetBoard();
 	}
 
-	private void ResetBoard()
+	
+	private void resetBoard()
 	{
-		for(int i = 0; i < board.length; i++)
+		for(int i = 0; i < rows/2; i++) //color blacks
 		{
-			for(int j = 0; j < board[i].length; j++)
+			for(int j = 0; j < cols; j++)
 			{
-				if (i == 0 || i == 1)
-				{
-					board[i][j] = new Piece(Piece.Team.BLACK);
-				}
-				else if( i == 3 || i == 4)
-				{
-					board[i][j] = new Piece(Piece.Team.WHITE);
-				}
-				else
-				{
-					if (j == 4) // middle piece
-						board[i][j] = null;
-					else if(j == 0 || j == 2 || j == 5 || j == 7) // black pieces
-						board[i][j] = new Piece(Piece.Team.BLACK);
-					else //	white pieces
-						board[i][j] = new Piece(Piece.Team.WHITE);
-				}
+				board[i][j] = new Piece(Piece.Team.BLACK);
 			}
+		}
+		for(int i = (rows/2)+1; i < rows; i++)//color bottom white
+		{
+			for(int j = 0; j < cols; j++)
+			{
+				board[i][j] = new Piece(Piece.Team.WHITE);
+			}
+		}
+		boolean color = true;
+		for(int i = 0; i < cols; i++)
+		{
+			if(i == cols/2)
+			{
+				board[rows/2][i] = null;
+				continue;
+			}
+			if(color)
+				board[rows/2][i] = new Piece(Piece.Team.BLACK);
+			else
+				board[rows/2][i] = new Piece(Piece.Team.WHITE);
+			color = !color;
 		}
 	}
 	
