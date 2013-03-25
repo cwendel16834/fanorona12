@@ -11,7 +11,7 @@ public class Board
 	public Board()
 	{
 		board = new Piece[rows][cols];
-		ResetBoard();
+		resetBoard();
 	}
 
 	public Board(int r, int c)
@@ -19,10 +19,10 @@ public class Board
 		rows = r;
 		cols = c;
 		board = new Piece[rows][cols];
-		ResetBoard();
+		resetBoard();
 	}
 
-	private void ResetBoard()
+	public void resetBoard()
 	{
 		for(int i = 0; i < board.length; i++)
 		{

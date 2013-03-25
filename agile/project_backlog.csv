@@ -12,45 +12,45 @@
 11,remove piece from board,30,2
 12,implement turn time limit,120,2
 13,move a piece - click and drag,120,2
-14,add undo command,60,
+14,add undo command,60,X
 15,new game/reset,30,2
-16,keep win count,30,
-17,reset win count,15,
-18,AI,480,
+16,keep win count,30,3
+17,reset win count,15,3
+18,AI,480,3
 19,invalid move message,20,2
 20,show all possible moves,180,
 21,computer makes a random move,30,2
 22,computer looks ahead one move,120,
 23,one level pruning,120,
-24,board evaluation function,120,
+24,board evaluation function,120,3
 25,display board to user,60,1
 26,play again prompt,30,2
-27,sound on move,60,
-28,sound on capture,60,
-29,sound on win/lose,60,
+27,sound on move,60,x
+28,sound on capture,60,x
+29,sound on win/lose,60,x
 30,make interface window for scoreboard and new game button,60,1
-31,choose which piece to capture,90,
-32,determine if multiple pieces can be captured,90,
-33,check if another piece can be captured,45,
-34,3D visuals,240,
-35,move animations,180,
-36,capture animations,180,
+31,choose which piece to capture,90,3
+32,determine if multiple pieces can be captured,90,3
+33,check if another piece can be captured,45,3
+34,3D visuals,240,x
+35,move animations,180,x
+36,capture animations,180,x
 37,turn indicator,60,2
 38,timer display,45,2
 39,time up message,45,2
-40,change background,60,
-41,user settings,90,
-42,mute sounds,60,
-43,select game type,90,
+40,change background to scale,60,3
+41,user settings,90,x
+42,mute sounds,60,x
+43,select game type,90,X
 44,set up GitHub,30,1
 45,set up java project,30,1
-46,,,
-47,,,
-48,,,
-49,,,
-50,,,
-51,,,
-52,,,
+46,prompt for client/server,45,3
+47,write client,60,3
+48,write server,120,3
+49,prompt for board size,30,3
+50,paika,60,3
+51,change board size,,3
+52,tie condition,,3
 53,,,
 54,,,
 55,,,

@@ -60,6 +60,11 @@ public class GameTimer extends Thread{
 		return (int) ((t - System.currentTimeMillis()) / 1000);
 	}
 	
+	public void reset() {
+		t = System.currentTimeMillis() + (seconds*1000);
+		valid = true;
+	}
+	
 	boolean valid;
 	boolean turn;
 	int seconds;
