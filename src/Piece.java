@@ -8,16 +8,29 @@ public class Piece {
 	public int x;
 	public int y;
 	
-	public enum Team { BLACK, WHITE }
+	public enum Team {BLACK, WHITE }
 	
 	private Team team;
 	
 	public Piece() {
-		team = Team.BLACK;
+		team = null;
 	}
 	
 	public Piece(Team t) {
 		team = t;
+	}
+	
+	public Team getOppositeTeam()
+	{
+		switch(this.team)
+		{
+		case WHITE:
+			return Team.BLACK;
+		case BLACK:
+			return Team.WHITE;
+		default:
+				return null;
+		}
 	}
 	
 	public Team getTeam() {
