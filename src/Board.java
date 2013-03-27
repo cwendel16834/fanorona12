@@ -24,14 +24,14 @@ public class Board
 
 	public void resetBoard()
 	{
-		for(int i = 0; i < rows/2; i++) //color blacks
+		for(int i = 0; i < rows/2; i++) //color bottom whites
 		{
 			for(int j = 0; j < cols; j++)
 			{
 				board[i][j] = new Piece(Piece.Team.WHITE);
 			}
 		}
-		for(int i = (rows/2)+1; i < rows; i++)//color bottom white
+		for(int i = (rows/2)+1; i < rows; i++)//color top black
 		{
 			for(int j = 0; j < cols; j++)
 			{
@@ -237,4 +237,5 @@ public class Board
 	public Piece[][] getBoard(){
 		return board;
 	}
+
 }
