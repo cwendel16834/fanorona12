@@ -253,6 +253,12 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
             }
         });
         
+        optionsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                controller.showOptions();
+            }
+        });
+        
         boardPanel.addMouseListener(this);
         boardPanel.addMouseMotionListener(this);
         pack();

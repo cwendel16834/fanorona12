@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -23,6 +25,8 @@ public class GameController implements ActionListener {
 	private int player1Wins;
     private int player2Wins;
     private static int timeLeft;
+    private Settings settings;
+    
 	
 	
 	public GameController() {
@@ -32,6 +36,7 @@ public class GameController implements ActionListener {
 		gameTimer = new GameTimer(15);
 		turnsPlayed = 0;
 		player1Turn = true;
+		settings = new Settings();
 		
 		//initialize board and vBoard
 	}
@@ -92,6 +97,30 @@ public class GameController implements ActionListener {
             	vBoard.setVisible(true);
             }
         });
+	}
+	
+	public void showOptions() {
+		java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                
+            }
+        });
+		SettingsDialog dialog = new SettingsDialog(new javax.swing.JFrame(), true, this);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                //Settings may have changed
+            }
+        });
+        dialog.setVisible(true);
+	}
+	
+	public void updateSettings(Settings set) {
+		this.settings = set;
+	}
+	
+	public Settings getSettings() {
+		return settings;
 	}
 	
 	public static void main(String args[]) {
