@@ -74,7 +74,17 @@ public class BoardPanel extends JPanel {
 		this.setPreferredSize(getBoardSize());
 		
 		this.add(backgroundLabel);
+		this.setBackground(Color.gray);
 		
+		resetBoard();
+	}
+	
+	public void setBoard(Piece[][] pieces){
+		boardPieces = pieces;
+		resetBoard();
+	}
+	
+	public void resetBoard(){
 		for(int i=0;i<boardPieces.length;i++){
 			for(int j=0;j<boardPieces[i].length;j++){
 				if(boardPieces[i][j] == null)
@@ -168,10 +178,14 @@ public class BoardPanel extends JPanel {
     	Point closest = new Point(((reversed.y+8)/62),((reversed.x-17)/62));
     	
     	System.out.println("x: " + closest.x + ", y: " + closest.y);
-    	if(boardPieces[closest.x][closest.y] == null){
-    		return null;
-    	}
     	return closest;
+    }
+    
+    public boolean PieceExists(Point p){
+    	if(boardPieces[p.x][p.y] == null){
+    		return false;
+    	}
+    	return true;
     }
 	
 	BufferedImage blackPiece;

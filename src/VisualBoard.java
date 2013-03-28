@@ -6,6 +6,7 @@ package twelve.team;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -276,31 +277,14 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     public void updateBoard() {
     	
     }
-       
-    public Point piecePosition(int x, int y){
-    	return new Point(62*y + 49, 62*x + 24);
-    }
     
-//    public Point closestPiece(Point p){
-//    	if(!boardPanel.contains(p)){
-//    		System.out.println("Board does not contain point!");
-//    		return null;
-//    	}
-//    	Point closest = new Point(((p.y+8)/62),((p.x-17)/62));
-//    	System.out.println("x: " + closest.x + ", y: " + closest.y);
-//    	if(boardPieces[closest.x][closest.y] == null){
-//    		return null;
-//    	}
-//    	return closest;
-//    }
+    public Point reversePoint(Point p){
+    	return new Point(p.y, p.x);
+    }
     
     public double distance(Point a, Point b){
     	return Math.pow((a.x-b.x), 2) + Math.pow(a.y-b.y, 2);
     }
-
-    /**
-     * @param args the command line arguments
-     */
     
     // Variables declaration - do not modify   
     
@@ -338,7 +322,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     // End of variables declaration                   
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 		if(moving){
 			boardPanel.setPiecePosition(movingPiece, e.getPoint());
@@ -350,37 +333,34 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		Point p = e.getPoint();
 		//get starting position here
-		if((movingPiece = boardPanel.closestPiece(p)) != null){
-			moving = true;
-			statusTextArea.setText("Moving Piece");
-			repaint();
+		if(boardPanel.PieceExists((movingPiece = boardPanel.closestPiece(p)))){
+			//if(controller.player1Turn() && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.WHITE){
+				moving = true;
+				statusTextArea.setText("Moving Piece");
+				repaint();
+			//}
 		}
 	}
 
@@ -388,13 +368,41 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		// check if the movement was valid using starting position and ending position
+		if(!moving)
+			return;
 		moving = false;
 		Point p = boardPanel.closestPiece(e.getPoint());
-		if(p.x == -1){
+		if(!boardPanel.PieceExists(p)){
+			try {
+				this.controller.getBoard().move(this.reversePoint(movingPiece), this.reversePoint(p));
+			} catch (MoveException e1) {
+				final AdvanceFrame frame = new AdvanceFrame();
+				
+				EventQueue.invokeLater(new Runnable(){
+					@Override
+					public void run() {
+						frame.setVisible(true);
+					}
+				});
+				
+				while(!frame.isVisible()) { }
+				while(frame.isVisible()){ }
+				
+				if(frame.getAdvance()){
+					//Do advance move here
+				} else {
+					//Do retreat move here
+				}
+				//e1.printStackTrace();
+			} catch (Exception e1) {
+				statusTextArea.setText("Invalid Move");
+				//e1.printStackTrace();
+			}
+			boardPanel.setBoard(controller.getBoard().getBoard());
+			
+		} else if(p.x == -1){
 			Point origin = boardPanel.piecePosition(movingPiece.x, movingPiece.y);
 			boardPanel.setPiecePosition(movingPiece, origin);
-		} else if(p == null){
-			//TODO call board move
 		} else {
 			statusTextArea.setText("Invalid Move");
 			Point origin = boardPanel.piecePosition(movingPiece.x, movingPiece.y);
