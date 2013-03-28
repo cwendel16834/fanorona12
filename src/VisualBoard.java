@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -275,7 +277,8 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     }
     
     public void updateBoard() {
-    	
+    	boardPanel.setBoard(controller.getBoard().getBoard());
+    	repaint();
     }
     
     public Point reversePoint(Point p){
@@ -376,23 +379,20 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 			try {
 				this.controller.getBoard().move(this.reversePoint(movingPiece), this.reversePoint(p));
 			} catch (MoveException e1) {
-				final AdvanceFrame frame = new AdvanceFrame();
+				moving = false;
+				final AdvanceFrame frame = new AdvanceFrame(this, true);
 				
-				EventQueue.invokeLater(new Runnable(){
+				frame.addWindowListener(new WindowAdapter(){
 					@Override
-					public void run() {
-						frame.setVisible(true);
+					public void windowClosing(WindowEvent e){
+						if(frame.getAdvance()){
+							//Do advance move here
+						} else {
+							//Do retreat move here
+						}
 					}
 				});
-				
-				while(!frame.isVisible()) { }
-				while(frame.isVisible()){ }
-				
-				if(frame.getAdvance()){
-					//Do advance move here
-				} else {
-					//Do retreat move here
-				}
+				frame.setVisible(true);
 				//e1.printStackTrace();
 			} catch (Exception e1) {
 				statusTextArea.setText("Invalid Move");

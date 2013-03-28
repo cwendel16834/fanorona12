@@ -1,9 +1,11 @@
 package twelve.team;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle;
@@ -13,7 +15,7 @@ import javax.swing.WindowConstants;
  *
  * @author mjmjelde
  */
-public class AdvanceFrame extends JFrame {
+public class AdvanceFrame extends JDialog {
 
     /**
 	 * 
@@ -22,8 +24,10 @@ public class AdvanceFrame extends JFrame {
 	/**
      * Creates new form AdvanceFrame
      */
-    public AdvanceFrame() {
-        initComponents();
+    
+    public AdvanceFrame(Frame parent, boolean modal){
+    	super(parent, modal);
+    	initComponents();
     }
                       
     private void initComponents() {
@@ -31,8 +35,6 @@ public class AdvanceFrame extends JFrame {
         AdvanceButton = new JButton();
         RetreatButton = new JButton();
         questionLabel = new JLabel();
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         AdvanceButton.setText("Advance");
         AdvanceButton.addActionListener(new ActionListener() {
