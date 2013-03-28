@@ -345,9 +345,10 @@ public class Board
 			Direction d = getDirection(start,end);
 			Piece.Team opposite = getPiece(start).getOppositeTeam();
 			
-			board[end.y][end.x] = p; //move the chosen piece to the space that it was moved
+			
 			
 			Point target = possibleCapture(start,end,type);
+			board[end.y][end.x] = p; //move the chosen piece to the space that it was moved
 			deletePiece(start);
 			if(target != null)
 			{
