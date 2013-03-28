@@ -146,6 +146,7 @@ public class Board
 	}
 	
 	//Gets the point with a given starting point and a direction (for lack of a better name)
+	//returns null if point is out of bounds
 	private Point getPoint(Point start, Direction d)
 	{
 		Point end = new Point();
@@ -252,16 +253,18 @@ public class Board
 			{
 				Point target = getPoint(land,d);  //look for targets in the same direction you traveled
 				Point targetBehind = getPoint(start,getOppositeDirection(d)); //from your starting position get the target behind 
-				if(board[target.y][target.x] != null) //make sure target is not null
-					if(board[target.y][target.x].getTeam() == opposite) //check position ahead in the same direction you advanced for opposite team
-					{
-						++captureAhead;
-					}
-				if(board[targetBehind.y][targetBehind.x] != null) //make sure behind is not null
-					if(board[targetBehind.y][targetBehind.x].getTeam() == opposite)
-					{
-						++captureBehind;
-					}
+				if(target != null)
+					if(board[target.y][target.x] != null) //make sure target is not null
+						if(board[target.y][target.x].getTeam() == opposite) //check position ahead in the same direction you advanced for opposite team
+						{
+							++captureAhead;
+						}
+				if(targetBehind != null)
+					if(board[targetBehind.y][targetBehind.x] != null) //make sure behind is not null
+						if(board[targetBehind.y][targetBehind.x].getTeam() == opposite)
+						{
+							++captureBehind;
+						}
 			}
 		}
 		if (captureAhead+captureBehind > 0)
@@ -290,25 +293,29 @@ public class Board
 		Point target = getPoint(end,d);
 		Piece.Team opposite = getPiece(start).getOppositeTeam();
 		
-		
-		if(board[target.y][target.x] != null && board[behind.y][behind.x] != null)
-			if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite )
-			{
-				throw new MoveException(target,behind); //throw something
-			}
-		if(board[target.y][target.x] != null)
-			if(board[target.y][target.x].getTeam() == opposite )
-			{
-				return target;
-			}
-		if(board[behind.y][behind.x] != null)
-			if(board[behind.y][behind.x].getTeam() == opposite )
-			{
-				return behind;
-			}
+		//check that points target and behind are not null
+		if(behind != null && target != null)
+			if(board[target.y][target.x] != null && board[behind.y][behind.x] != null)
+				if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite )
+				{
+					throw new MoveException(target,behind); //throws the points of both pieces that can be taken
+				}
+		if(target != null)
+			if(board[target.y][target.x] != null)
+				if(board[target.y][target.x].getTeam() == opposite )
+				{
+					return target;
+				}
+		if(behind != null)
+			if(board[behind.y][behind.x] != null)
+				if(board[behind.y][behind.x].getTeam() == opposite )
+				{
+					return behind;
+				}
 		return null;
 	}
 	
+	//returns true if another capture can be made by the same piece
 	public boolean move(Point start, Point end) throws Exception,MoveException
 	{
 		//check if capture moves are available
@@ -318,7 +325,7 @@ public class Board
 			Direction d = getDirection(start,end);
 			Piece.Team opposite = getPiece(start).getOppositeTeam();
 			
-			board[end.y][end.x] = p;
+			board[end.y][end.x] = p; //move the chosen piece to the space that it was moved
 			
 			Point target = possibleCapture(start,end);
 			deletePiece(start);
@@ -331,7 +338,7 @@ public class Board
 				}
 			}
 				
-			
+			//if you can capture more pieces with the same original piece return true
 			if(canCapture(end))
 				return true;
 			else
@@ -356,7 +363,12 @@ public class Board
 		
 		
 		
-		
+		Point start2 = new Point();
+		start2.x = 3;
+		start2.y = 4;
+		Point end2 = new Point();
+		end2.x = 3;
+		end2.y = 3;
 		
 		Board board = new Board();
 		
@@ -367,6 +379,10 @@ public class Board
 			else
 				System.out.println("Cannot Move Again");
 			board.printBoard();
+			if(board.move(start2,end2))
+				System.out.println("Can move again");
+			else
+				System.out.println("Cannot move Again");
 			System.out.println();
 //			if(board.move(start2, end2))
 //				System.out.println("Can move again");
