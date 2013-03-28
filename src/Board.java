@@ -287,7 +287,7 @@ public class Board
 		return board[p.y][p.x];
 	}
 	
-	private Point possibleCapture(Point start, Point end) throws MoveException
+	private Point possibleCapture(Point start, Point end, moveType type) throws MoveException
 	{
 		if(getPiece(start) == null)
 			return null;
@@ -298,29 +298,45 @@ public class Board
 		Piece.Team opposite = getPiece(start).getOppositeTeam();
 		
 		//check that points target and behind are not null
-		if(behind != null && target != null)
-			if(board[target.y][target.x] != null && board[behind.y][behind.x] != null)
-				if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite )
-				{
-					throw new MoveException(target,behind); //throws the points of both pieces that can be taken
-				}
-		if(target != null)
-			if(board[target.y][target.x] != null)
-				if(board[target.y][target.x].getTeam() == opposite )
-				{
-					return target;
-				}
-		if(behind != null)
-			if(board[behind.y][behind.x] != null)
-				if(board[behind.y][behind.x].getTeam() == opposite )
-				{
-					return behind;
-				}
+		if(type == moveType.NONE)
+		{
+			if(behind != null && target != null)
+				if(board[target.y][target.x] != null && board[behind.y][behind.x] != null)
+					if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite )
+					{
+						throw new MoveException(target,behind); //throws the points of both pieces that can be taken
+					}
+		}
+		if(type == moveType.NONE || type == moveType.ADVANCE)
+		{
+			if(target != null)
+				if(board[target.y][target.x] != null)
+					if(board[target.y][target.x].getTeam() == opposite )
+					{
+						return target;
+					}
+		}
+		if(type == moveType.NONE || type == moveType.RETREAT)
+		{
+			if(behind != null)
+				if(board[behind.y][behind.x] != null)
+					if(board[behind.y][behind.x].getTeam() == opposite )
+					{
+						return behind;
+					}
+		}
 		return null;
 	}
 	
+	public enum moveType {ADVANCE,RETREAT,NONE};
 	//returns true if another capture can be made by the same piece
+	
 	public boolean move(Point start, Point end) throws Exception,MoveException
+	{
+		return move(start,end,moveType.NONE);
+	}
+	
+	public boolean move(Point start, Point end, moveType type) throws Exception,MoveException
 	{
 		//check if capture moves are available
 		if(isValid(start,end))
@@ -331,7 +347,7 @@ public class Board
 			
 			board[end.y][end.x] = p; //move the chosen piece to the space that it was moved
 			
-			Point target = possibleCapture(start,end);
+			Point target = possibleCapture(start,end,type);
 			deletePiece(start);
 			if(target != null)
 			{
@@ -356,6 +372,9 @@ public class Board
 		else
 			throw new Exception("Invalid Move");
 	}
+	
+	
+	
 	
 	public Piece[][] getBoard(){
 		return board;
@@ -387,7 +406,7 @@ public class Board
 			end.x = endx;
 			end.y = endy;
 			try {
-				if(board.move(start,end))
+				if(board.move(start,end,moveType.ADVANCE))
 				{
 					board.printBoard();
 					System.out.println("You can move Again");
@@ -401,6 +420,7 @@ public class Board
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				System.out.println("Can capture two");
+				
 				break;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
