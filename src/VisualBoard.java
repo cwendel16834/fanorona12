@@ -6,6 +6,7 @@ package twelve.team;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -15,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -55,20 +58,25 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         updateBoard();
     }
     
+    public VisualBoard(GameController c) {
+    	controller = c;
+    	initComponents();
+    	updateBoard();
+    }
+    
     public void paint(Graphics g){
     	super.paintComponents(g);
     	
     	timeLeftLabel.setText("Time Left: " + timeLeft);
-    	
-    	Graphics2D g2 = (Graphics2D) boardPanel.getGraphics();
-    	for(int i=0;i<boardPieces.length;i++){
-    		for(int j=0;j<boardPieces[i].length;j++){
-    			if(boardPieces[i][j] == null)
-    				continue;
-    			
-    			g2.drawImage(boardPieces[i][j].image, boardPieces[i][j].x-boardPieces[i][j].image.getWidth(null)/2, boardPieces[i][j].y-boardPieces[i][j].image.getHeight(null)/2, null);
-    		}
-    	}
+//    	Graphics2D g2 = (Graphics2D) boardPanel.getGraphics();
+//    	for(int i=0;i<boardPieces.length;i++){
+//    		for(int j=0;j<boardPieces[i].length;j++){
+//    			if(boardPieces[i][j] == null)
+//    				continue;
+//    			
+//    			g2.drawImage(boardPieces[i][j].image, boardPieces[i][j].x-boardPieces[i][j].image.getWidth(null)/2, boardPieces[i][j].y-boardPieces[i][j].image.getHeight(null)/2, null);
+//    		}
+//    	}
     	//createGrid(boardPanel.getGraphics(), boardPanel.getWidth(), boardPanel.getHeight());
     	//boardBackground.setVisible(false);
     	//boardPanel.repaint();
@@ -117,7 +125,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 		}
 
         optionsButton = new JButton();
-        boardPanel = new JPanel();
+        boardPanel = new BoardPanel(this.controller.getBoard().getBoard());
         boardBackground = new JLabel();
         helpButton = new JButton();
         newGameButton = new JButton();
@@ -133,7 +141,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
         optionsButton.setText("Options");
 
-        boardPanel.setPreferredSize(new java.awt.Dimension(600, 300));
+        //boardPanel.setPreferredSize(new java.awt.Dimension(600, 300));
 
         try {
 			boardBackground.setIcon(new ImageIcon(ImageIO.read(new File("imgs/board.png"))));
@@ -275,38 +283,23 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     }
     
     public void updateBoard() {
-    	
-    }
-       
-    public Point piecePosition(int x, int y){
-    	return new Point(62*y + 49, 62*x + 24);
+    	boardPanel.setBoard(controller.getBoard().getBoard());
+    	repaint();
     }
     
-    public Point closestPiece(Point p){
-    	if(!boardPanel.contains(p)){
-    		System.out.println("Board does not contain point!");
-    		return null;
-    	}
-    	Point closest = new Point(((p.y+8)/62),((p.x-17)/62));
-    	if(boardPieces[closest.x][closest.y] == null){
-    		return null;
-    	}
-    	return closest;
+    public Point reversePoint(Point p){
+    	return new Point(p.y, p.x);
     }
     
     public double distance(Point a, Point b){
     	return Math.pow((a.x-b.x), 2) + Math.pow(a.y-b.y, 2);
     }
-
-    /**
-     * @param args the command line arguments
-     */
     
     // Variables declaration - do not modify   
     
     //logical components -- should not be here, move to gameController
     
-    public GameController controller;
+    GameController controller;
     
     //data for visuals
     private int player1Wins;
@@ -318,7 +311,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     
     //visual components
     private JLabel boardBackground;
-    private JPanel boardPanel;
+    private BoardPanel boardPanel;
     private static JLabel currentTurn;
     private JLabel currentTurnLabel;
     private JLabel timeLeftLabel;
@@ -338,48 +331,45 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     // End of variables declaration                   
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 		if(moving){
-			boardPieces[movingPiece.x][movingPiece.y].x = e.getX();
-			boardPieces[movingPiece.x][movingPiece.y].y = e.getY();
+			boardPanel.setPiecePosition(movingPiece, e.getPoint());
+//			boardPieces[movingPiece.x][movingPiece.y].x = e.getX();
+//			boardPieces[movingPiece.x][movingPiece.y].y = e.getY();
 			repaint();
 		}
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		Point p = e.getPoint();
 		//get starting position here
-		if((movingPiece = closestPiece(p)) != null){
-			moving = true;
-			statusTextArea.setText("Moving Piece");
-			repaint();
+		if(boardPanel.PieceExists((movingPiece = boardPanel.closestPiece(p)))){
+			//if(controller.player1Turn() && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.WHITE){
+				moving = true;
+				statusTextArea.setText("Moving Piece");
+				repaint();
+			//}
 		}
 	}
 
@@ -387,15 +377,44 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		// check if the movement was valid using starting position and ending position
+		if(!moving)
+			return;
 		moving = false;
-		Point p = closestPiece(e.getPoint());
-		if(p == null){
+		Point p = boardPanel.closestPiece(e.getPoint());
+		if(!boardPanel.PieceExists(p)){
+			try {
+				this.controller.getBoard().move(this.reversePoint(movingPiece), this.reversePoint(p));
+			} catch (MoveException e1) {
+				moving = false;
+				final AdvanceFrame frame = new AdvanceFrame(this, true);
+				
+				frame.addWindowListener(new WindowAdapter(){
+					@Override
+					public void windowClosing(WindowEvent e){
+						if(frame.getAdvance()){
+							//Do advance move here
+						} else {
+							//Do retreat move here
+						}
+					}
+				});
+				frame.setVisible(true);
+				//e1.printStackTrace();
+			} catch (Exception e1) {
+				statusTextArea.setText("Invalid Move");
+				//e1.printStackTrace();
+			}
+			boardPanel.setBoard(controller.getBoard().getBoard());
 			
+		} else if(p.x == -1){
+			Point origin = boardPanel.piecePosition(movingPiece.x, movingPiece.y);
+			boardPanel.setPiecePosition(movingPiece, origin);
 		} else {
 			statusTextArea.setText("Invalid Move");
-			Point origin = piecePosition(movingPiece.x, movingPiece.y);
-			boardPieces[movingPiece.x][movingPiece.y].x = origin.x;
-			boardPieces[movingPiece.x][movingPiece.y].y = origin.y;
+			Point origin = boardPanel.piecePosition(movingPiece.x, movingPiece.y);
+			boardPanel.setPiecePosition(movingPiece, origin);
+//			boardPieces[movingPiece.x][movingPiece.y].x = origin.x;
+//			boardPieces[movingPiece.x][movingPiece.y].y = origin.y;
 		}
 		repaint();
 	}

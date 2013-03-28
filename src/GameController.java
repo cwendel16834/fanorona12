@@ -15,7 +15,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 //tells vBoard what to change visually
 //this will be the interface for client-server model. messages will be decoded and processed here
 //before the visual changes are sent to vBoard.
-public class GameController implements ActionListener {
+public class GameController implements GameTimerListener {
 	
 	private Board board;
 	private VisualBoard vBoard;
@@ -24,16 +24,15 @@ public class GameController implements ActionListener {
 	private boolean player1Turn; //player1 is user
 	private int player1Wins;
     private int player2Wins;
-    private static int timeLeft;
     private Settings settings;
-    
 	
 	
 	public GameController() {
 		board = new Board();
-		vBoard = new VisualBoard();
-		vBoard.controller = this;
-		gameTimer = new GameTimer(15);
+		vBoard = new VisualBoard(this);
+		//vBoard.controller = this;
+		gameTimer = new GameTimer(15000);
+		gameTimer.setActionListener(this);
 		turnsPlayed = 0;
 		player1Turn = true;
 		settings = new Settings();
@@ -48,21 +47,23 @@ public class GameController implements ActionListener {
 	}
 	
 	public void startTimer() {
-		player1Turn = gameTimer.getTurn();
-        while(!Thread.interrupted()){
-        	if(timeLeft != gameTimer.timeLeft()){
-        		vBoard.setTimer(gameTimer.timeLeft());
-        	}
-        	
-        	if(player1Turn != gameTimer.getTurn()){
-        		player1Turn = gameTimer.getTurn();
-        		if(player1Turn){
-        			vBoard.setTurn("Player 1");
-        		} else {
-        			vBoard.setTurn("Player 2");
-        		}
-        	}
-        }
+		player1Turn = true;
+		
+//		player1Turn = gameTimer.getTurn();
+//        while(!Thread.interrupted()){
+//        	if(timeLeft != gameTimer.timeLeft()){
+//        		vBoard.setTimer(gameTimer.timeLeft());
+//        	}
+//        	
+//        	if(player1Turn != gameTimer.getTurn()){
+//        		player1Turn = gameTimer.getTurn();
+//        		if(player1Turn){
+//        			vBoard.setTurn("Player 1");
+//        		} else {
+//        			vBoard.setTurn("Player 2");
+//        		}
+//        	}
+//        }
 	}
 	
 	public void startGame() {
@@ -138,11 +139,51 @@ public class GameController implements ActionListener {
         
         
     }
+	
+	public boolean player1Turn(){
+		return player1Turn;
+	}
+	
+	/*
+	 * Returns the Board
+	 */
+	public Board getBoard(){
+		return board;
+	}
 
+	/*
+	 * Event called when Game Timer Expires
+	 * @see twelve.team.GameTimerListener#TimesUp()
+	 */
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void TimesUp() {
+		final TimesUp panel = new TimesUp();				
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (dim.width - panel.getWidth())/2;
+    	int y = (dim.height - panel.getHeight())/2;
+    	panel.setLocation(x,y);
+		java.awt.EventQueue.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				panel.setVisible(true);
+				
+			}
+			
+		});
+		while(!panel.isVisible()){}
+		while(panel.isVisible()){}		
+		gameTimer.reset();
+		player1Turn = !player1Turn;
+	}
+
+	/*
+	 * Event called when the seconds on the GameTimer is decreased
+	 * @see twelve.team.GameTimerListener#secondDecrease(int)
+	 */
+	@Override
+	public void secondDecrease(int timeLeft) {
+		vBoard.setTimer(timeLeft);
 	}
 	
 };

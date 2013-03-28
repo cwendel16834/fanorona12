@@ -1,56 +1,51 @@
 package twelve.team;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.util.List;
+import java.util.ArrayList;
+
+interface GameTimerListener {
+	public void TimesUp();
+	public void secondDecrease(int timeLeft);
+}
 
 public class GameTimer extends Thread{
 	
-	public GameTimer(int sec){
-		turn = true;
-		seconds = sec;
-		this.start();
+	public GameTimer(long millisec){
+		valid = true;
+		seconds = millisec;
+	}
+	
+	public GameTimer(long millisec, boolean repeatable){
+		valid = true;
+		seconds = millisec;
+		repeat = repeatable;
 	}
 	
 	public void run(){
-		while(!interrupted()){
+		while(!interrupted() && valid){
 			valid = true;
-			t = System.currentTimeMillis() + (seconds*1000);
+			t = System.currentTimeMillis() + seconds;
+			secLeft = (int) (seconds/1000);
 			while(t > System.currentTimeMillis()){
 				try {
+					if(secLeft != (int)(t - System.currentTimeMillis()) / 1000){
+						secLeft = (int)(t - System.currentTimeMillis()) / 1000;
+						for(GameTimerListener listener : listeners){
+							listener.secondDecrease(secLeft);
+						}
+					}
 					sleep(50);
 				} catch (InterruptedException e) {
 					
 				}
 			}
-			final TimesUp panel = new TimesUp();
-			
-			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-			int x = (dim.width - panel.getWidth())/2;
-	    	int y = (dim.height - panel.getHeight())/2;
-	    	panel.setLocation(x,y);
-			java.awt.EventQueue.invokeLater(new Runnable(){
-
-				@Override
-				public void run() {
-					panel.setVisible(true);
-					
-				}
-				
-			});
-			valid = false;
-			while(!panel.isVisible()){}
-			while(panel.isVisible()){
-				try {
-					sleep(50);
-				} catch (InterruptedException e) {
-				}
+			for(int i=0;i<listeners.size();i++){
+				listeners.get(i).TimesUp();
 			}
-			turn = !turn;
+			if(!repeat){
+				valid = false;
+			}
 		}
-	}
-	
-	public boolean getTurn(){
-		return turn;
 	}
 	
 	public int timeLeft(){
@@ -61,12 +56,20 @@ public class GameTimer extends Thread{
 	}
 	
 	public void reset() {
-		t = System.currentTimeMillis() + (seconds*1000);
+		t = System.currentTimeMillis() + seconds;
 		valid = true;
+		if(!this.isAlive())
+			this.start();
+	}
+	
+	public void setActionListener(GameTimerListener al){
+		listeners.add(al);
 	}
 	
 	boolean valid;
-	boolean turn;
-	int seconds;
+	boolean repeat;
+	long seconds;
 	long t;
+	int secLeft;
+	List<GameTimerListener> listeners = new ArrayList<GameTimerListener>();
 }
