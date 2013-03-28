@@ -249,7 +249,8 @@ public class Board
 			if( land == start) //when direction is none
 				continue;
 			
-			if(board[land.y][land.x] == null) //you will land in an empty spot
+			//if(board[land.y][land.x] == null) //you will land in an empty spot
+			if(isValid(start,land))// checks that the move was legal
 			{
 				Point target = getPoint(land,d);  //look for targets in the same direction you traveled
 				Point targetBehind = getPoint(start,getOppositeDirection(d)); //from your starting position get the target behind 
