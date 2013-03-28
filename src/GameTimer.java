@@ -1,43 +1,46 @@
 package twelve.team;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Date;
+import java.util.List;
 import java.util.ArrayList;
-import java.util.EventObject;
+
+interface GameTimerListener {
+	public void TimesUp();
+	public void secondDecrease(int timeLeft);
+}
 
 public class GameTimer extends Thread{
 	
-	public GameTimer(int sec){
-		listeners = new ArrayList<ActionListener>();
+	public GameTimer(long millisec){
 		valid = true;
-		seconds = sec;
-		this.start();
+		seconds = millisec;
 	}
 	
-	public GameTimer(int sec, boolean repeatable){
+	public GameTimer(long millisec, boolean repeatable){
 		valid = true;
-		seconds = sec;
+		seconds = millisec;
 		repeat = repeatable;
-		this.start();
 	}
 	
 	public void run(){
 		while(!interrupted() && valid){
 			valid = true;
-			t = System.currentTimeMillis() + (seconds*1000);
+			t = System.currentTimeMillis() + seconds;
+			secLeft = (int) (seconds/1000);
 			while(t > System.currentTimeMillis()){
 				try {
+					if(secLeft != (int)(t - System.currentTimeMillis()) / 1000){
+						secLeft = (int)(t - System.currentTimeMillis()) / 1000;
+						for(GameTimerListener listener : listeners){
+							listener.secondDecrease(secLeft);
+						}
+					}
 					sleep(50);
 				} catch (InterruptedException e) {
 					
 				}
 			}
 			for(int i=0;i<listeners.size();i++){
-				EventObject event = new EventObject(this);
-				listeners.get(i).actionPerformed(new ActionEvent(new EventObject(this), 0, ""));
+				listeners.get(i).TimesUp();
 			}
 			if(!repeat){
 				valid = false;
@@ -55,16 +58,18 @@ public class GameTimer extends Thread{
 	public void reset() {
 		t = System.currentTimeMillis() + (seconds*1000);
 		valid = true;
-		this.start();
+		if(!this.isAlive())
+			this.start();
 	}
 	
-	public void setActionListener(ActionListener al){
+	public void setActionListener(GameTimerListener al){
 		listeners.add(al);
 	}
 	
 	boolean valid;
 	boolean repeat;
-	int seconds;
+	long seconds;
 	long t;
-	ArrayList<ActionListener> listeners;
+	int secLeft;
+	List<GameTimerListener> listeners = new ArrayList<GameTimerListener>();
 }

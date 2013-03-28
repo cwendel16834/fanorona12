@@ -13,7 +13,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 //tells vBoard what to change visually
 //this will be the interface for client-server model. messages will be decoded and processed here
 //before the visual changes are sent to vBoard.
-public class GameController implements ActionListener {
+public class GameController implements ActionListener, GameTimerListener {
 	
 	private Board board;
 	private VisualBoard vBoard;
@@ -22,14 +22,14 @@ public class GameController implements ActionListener {
 	private boolean player1Turn; //player1 is user
 	private int player1Wins;
     private int player2Wins;
-    private static int timeLeft;
 	
 	
 	public GameController() {
 		board = new Board();
 		vBoard = new VisualBoard(this);
 		//vBoard.controller = this;
-		gameTimer = new GameTimer(15);
+		gameTimer = new GameTimer(15000);
+		gameTimer.setActionListener(this);
 		turnsPlayed = 0;
 		player1Turn = true;
 		
@@ -44,34 +44,6 @@ public class GameController implements ActionListener {
 	
 	public void startTimer() {
 		player1Turn = true;
-		gameTimer.setActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				player1Turn = !player1Turn;
-				System.out.println("We are in here!");
-				final TimesUp panel = new TimesUp();				
-				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-				int x = (dim.width - panel.getWidth())/2;
-		    	int y = (dim.height - panel.getHeight())/2;
-		    	panel.setLocation(x,y);
-				java.awt.EventQueue.invokeLater(new Runnable(){
-	
-					@Override
-					public void run() {
-						panel.setVisible(true);
-						
-					}
-					
-				});
-				while(!panel.isVisible()){}
-				while(panel.isVisible()){}
-				
-				gameTimer.reset();
-				
-			}
-			
-		});
 		
 //		player1Turn = gameTimer.getTurn();
 //        while(!Thread.interrupted()){
@@ -148,6 +120,33 @@ public class GameController implements ActionListener {
 	
 	public Board getBoard(){
 		return this.board;
+	}
+
+	@Override
+	public void TimesUp() {
+		final TimesUp panel = new TimesUp();				
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (dim.width - panel.getWidth())/2;
+    	int y = (dim.height - panel.getHeight())/2;
+    	panel.setLocation(x,y);
+		java.awt.EventQueue.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				panel.setVisible(true);
+				
+			}
+			
+		});
+		while(!panel.isVisible()){}
+		while(panel.isVisible()){}		
+		gameTimer.reset();
+		player1Turn = !player1Turn;
+	}
+
+	@Override
+	public void secondDecrease(int timeLeft) {
+		vBoard.setTimer(timeLeft);
 	}
 	
 };
