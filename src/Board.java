@@ -1,6 +1,7 @@
 package twelve.team;
 
 import java.awt.Point;
+import java.util.Scanner;
 
 public class Board
 {
@@ -57,7 +58,7 @@ public class Board
 	public enum Direction {up,down,left,right,topleft,topright,botleft,botright,none};
 	
 	//returns a Direction from a given starting point and an ending point
-	public static Direction getDirection(Point start, Point end)
+	private static Direction getDirection(Point start, Point end)
 	{
 		if( start.x - end.x > 0) //left
 		{
@@ -199,6 +200,8 @@ public class Board
 	//checks if a move is valid
 	private boolean isValid(Point start, Point end)
 	{
+		if(start == null || end == null)
+			return false;
 		Direction direction  = getDirection(start,end);
 		
 		if(getPiece(start) == null) //cannot move an empty spot!
@@ -332,10 +335,15 @@ public class Board
 			deletePiece(start);
 			if(target != null)
 			{
-				while(target != null && getPiece(target).getTeam() == opposite)
+				Direction attack = getDirection(start,target);
+				while(target != null && getPiece(target).getTeam() == opposite) //error here
 				{
 					deletePiece(target);
-					target = getPoint(target,d);
+					target = getPoint(target,attack);
+					if(target != null)
+						if(board[target.y][target.x] == null )
+							break;
+					//error here
 				}
 			}
 				
@@ -355,51 +363,59 @@ public class Board
 	
 	public static void main(String args[])
 	{
-		Point start = new Point();
-		start.x = 5;
-		start.y = 1;
-		Point end = new Point();
-		end.x = 4;
-		end.y = 2;
-		
-		
-		
-		Point start2 = new Point();
-		start2.x = 3;
-		start2.y = 4;
-		Point end2 = new Point();
-		end2.x = 3;
-		end2.y = 3;
-		
 		Board board = new Board();
+		Scanner scanner = new Scanner(System.in);
 		
+		int startx;//column
+		int starty;//row
+		int endx;
+		int endy;
 		board.printBoard();
-		try {
-			if(board.move(start, end))
-				System.out.println("Can move again");
-			else
-				System.out.println("Cannot Move Again");
-			board.printBoard();
-			if(board.move(start2,end2))
-				System.out.println("Can move again");
-			else
-				System.out.println("Cannot move Again");
-			System.out.println();
-//			if(board.move(start2, end2))
-//				System.out.println("Can move again");
-//			else
-//				System.out.println("Cannot Move Again");
+		while(true)
+		{
+			System.out.println("Enter your move 'col' 'row' 'col' 'row' ");
 			
-		} catch (MoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			startx = scanner.nextInt();
+			starty = scanner.nextInt();
+			endx = scanner.nextInt();
+			endy = scanner.nextInt();
+			
+			Point start = new Point();
+			start.x = startx;
+			start.y = starty;
+			Point end = new Point();
+			end.x = endx;
+			end.y = endy;
+			try {
+				if(board.move(start,end))
+				{
+					board.printBoard();
+					System.out.println("You can move Again");
+				}
+				else 
+				{
+					board.printBoard();
+					System.out.println("Other team's turn");
+				}
+			} catch (MoveException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				System.out.println("Can capture two");
+				break;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				if(e.getMessage() == "Invalid Move")
+					System.out.println("Invalid Move");
+				else
+					e.printStackTrace();
+					board.printBoard();
+				continue;
+			}
 		}
-		System.out.println();
-		System.out.println();
-		board.printBoard();
+		
+		scanner.close();
+		
+	
 	}
 
 }
