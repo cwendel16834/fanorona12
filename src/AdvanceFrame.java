@@ -35,6 +35,8 @@ public class AdvanceFrame extends JDialog {
         AdvanceButton = new JButton();
         RetreatButton = new JButton();
         questionLabel = new JLabel();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         AdvanceButton.setText("Advance");
         AdvanceButton.addActionListener(new ActionListener() {
@@ -42,7 +44,7 @@ public class AdvanceFrame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				advance = true;
-				setVisible(false);
+				dispose();
 			}
             
         });
@@ -53,7 +55,7 @@ public class AdvanceFrame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				advance = false;
-				setVisible(false);
+				dispose();
 			}
         	
         });

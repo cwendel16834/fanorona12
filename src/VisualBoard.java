@@ -36,6 +36,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import twelve.team.Board.moveType;
 import twelve.team.Piece.Team;
 
 
@@ -380,7 +381,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 		if(!moving)
 			return;
 		moving = false;
-		Point p = boardPanel.closestPiece(e.getPoint());
+		final Point p = boardPanel.closestPiece(e.getPoint());
 		if(!boardPanel.PieceExists(p)){
 			try {
 				this.controller.getBoard().move(this.reversePoint(movingPiece), this.reversePoint(p));
@@ -390,12 +391,17 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 				
 				frame.addWindowListener(new WindowAdapter(){
 					@Override
-					public void windowClosing(WindowEvent e){
-						if(frame.getAdvance()){
-							//Do advance move here
-						} else {
-							//Do retreat move here
+					public void windowClosed(WindowEvent e){
+						try{
+							if(frame.getAdvance()){
+								controller.getBoard().move(reversePoint(movingPiece), reversePoint(p), moveType.ADVANCE);
+							} else {
+								controller.getBoard().move(reversePoint(movingPiece), reversePoint(p), moveType.RETREAT);
+							}
+						} catch(Exception e3){
+							System.out.println("Something went wrong");
 						}
+						updateBoard();
 					}
 				});
 				frame.setVisible(true);
