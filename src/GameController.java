@@ -1,7 +1,10 @@
 package twelve.team;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Toolkit;
+
+import twelve.team.Board.moveType;
 
 //class for managing gameplay and game logic
 //receives move info from vBoard and processes
@@ -135,6 +138,19 @@ public class GameController implements GameTimerListener {
 	
 	public boolean player1Turn(){
 		return player1Turn;
+	}
+	
+	public boolean move(Point start, Point end) throws MoveException, Exception{
+		return move(start, end, moveType.NONE);
+	}
+	
+	public boolean move(Point start, Point end, moveType type) throws MoveException, Exception{
+		boolean bool = board.move(start, end, type);
+		if(!bool){
+			player1Turn = !player1Turn;
+			gameTimer.reset();
+		}
+		return bool;
 	}
 	
 	/*

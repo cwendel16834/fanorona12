@@ -366,11 +366,14 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 		Point p = e.getPoint();
 		//get starting position here
 		if(boardPanel.PieceExists((movingPiece = boardPanel.closestPiece(p)))){
-			//if(controller.player1Turn() && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.WHITE){
-				moving = true;
-				statusTextArea.setText("Moving Piece");
-				repaint();
-			//}
+			if(!controller.player1Turn() && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.WHITE)
+				return;
+			if(controller.player1Turn() && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.BLACK)
+				return;
+			
+			moving = true;
+			statusTextArea.setText("Moving Piece");
+			repaint();
 		}
 	}
 
@@ -384,7 +387,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 		final Point p = boardPanel.closestPiece(e.getPoint());
 		if(!boardPanel.PieceExists(p)){
 			try {
-				this.controller.getBoard().move(this.reversePoint(movingPiece), this.reversePoint(p));
+				this.controller.move(this.reversePoint(movingPiece), this.reversePoint(p));
 			} catch (MoveException e1) {
 				moving = false;
 				final AdvanceFrame frame = new AdvanceFrame(this, true);
@@ -394,9 +397,9 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 					public void windowClosed(WindowEvent e){
 						try{
 							if(frame.getAdvance()){
-								controller.getBoard().move(reversePoint(movingPiece), reversePoint(p), moveType.ADVANCE);
+								controller.move(reversePoint(movingPiece), reversePoint(p), moveType.ADVANCE);
 							} else {
-								controller.getBoard().move(reversePoint(movingPiece), reversePoint(p), moveType.RETREAT);
+								controller.move(reversePoint(movingPiece), reversePoint(p), moveType.RETREAT);
 							}
 						} catch(Exception e3){
 							System.out.println("Something went wrong");
@@ -407,7 +410,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 				frame.setVisible(true);
 				//e1.printStackTrace();
 			} catch (Exception e1) {
-				statusTextArea.setText("Invalid Move");
+				statusTextArea.setText("Invalid Move (e1)");
 				//e1.printStackTrace();
 			}
 			boardPanel.setBoard(controller.getBoard().getBoard());
@@ -419,8 +422,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 			statusTextArea.setText("Invalid Move");
 			Point origin = boardPanel.piecePosition(movingPiece.x, movingPiece.y);
 			boardPanel.setPiecePosition(movingPiece, origin);
-//			boardPieces[movingPiece.x][movingPiece.y].x = origin.x;
-//			boardPieces[movingPiece.x][movingPiece.y].y = origin.y;
 		}
 		repaint();
 	}

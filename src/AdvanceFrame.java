@@ -1,15 +1,15 @@
 package twelve.team;
 
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle;
-import javax.swing.WindowConstants;
 
 /**
  *
@@ -91,6 +91,11 @@ public class AdvanceFrame extends JDialog {
         );
 
         pack();
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (dim.width - getWidth())/2;
+    	int y = (dim.height - getHeight())/2;
+    	setLocation(x,y);
     }// </editor-fold>                           
     
     public boolean getAdvance(){

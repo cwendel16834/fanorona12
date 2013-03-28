@@ -19,6 +19,9 @@ import twelve.team.Piece.Team;
 
 public class BoardPanel extends JPanel {
 	
+	
+	private static final long serialVersionUID = -7958679274723065586L;
+	
 	@Override
 	public void paint(Graphics g){
 		super.paintComponent(g);
