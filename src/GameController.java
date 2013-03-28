@@ -27,8 +27,8 @@ public class GameController implements ActionListener {
 	
 	public GameController() {
 		board = new Board();
-		vBoard = new VisualBoard();
-		vBoard.controller = this;
+		vBoard = new VisualBoard(this);
+		//vBoard.controller = this;
 		gameTimer = new GameTimer(15);
 		turnsPlayed = 0;
 		player1Turn = true;
@@ -43,21 +43,51 @@ public class GameController implements ActionListener {
 	}
 	
 	public void startTimer() {
-		player1Turn = gameTimer.getTurn();
-        while(!Thread.interrupted()){
-        	if(timeLeft != gameTimer.timeLeft()){
-        		vBoard.setTimer(gameTimer.timeLeft());
-        	}
-        	
-        	if(player1Turn != gameTimer.getTurn()){
-        		player1Turn = gameTimer.getTurn();
-        		if(player1Turn){
-        			vBoard.setTurn("Player 1");
-        		} else {
-        			vBoard.setTurn("Player 2");
-        		}
-        	}
-        }
+		player1Turn = true;
+		gameTimer.setActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				player1Turn = !player1Turn;
+				System.out.println("We are in here!");
+				final TimesUp panel = new TimesUp();				
+				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+				int x = (dim.width - panel.getWidth())/2;
+		    	int y = (dim.height - panel.getHeight())/2;
+		    	panel.setLocation(x,y);
+				java.awt.EventQueue.invokeLater(new Runnable(){
+	
+					@Override
+					public void run() {
+						panel.setVisible(true);
+						
+					}
+					
+				});
+				while(!panel.isVisible()){}
+				while(panel.isVisible()){}
+				
+				gameTimer.reset();
+				
+			}
+			
+		});
+		
+//		player1Turn = gameTimer.getTurn();
+//        while(!Thread.interrupted()){
+//        	if(timeLeft != gameTimer.timeLeft()){
+//        		vBoard.setTimer(gameTimer.timeLeft());
+//        	}
+//        	
+//        	if(player1Turn != gameTimer.getTurn()){
+//        		player1Turn = gameTimer.getTurn();
+//        		if(player1Turn){
+//        			vBoard.setTurn("Player 1");
+//        		} else {
+//        			vBoard.setTurn("Player 2");
+//        		}
+//        	}
+//        }
 	}
 	
 	public void startGame() {
@@ -114,6 +144,10 @@ public class GameController implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public Board getBoard(){
+		return this.board;
 	}
 	
 };
