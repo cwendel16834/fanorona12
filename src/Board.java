@@ -270,7 +270,7 @@ public class Board
 			return false;
 	}
 	
-	public void deletePiece(Point p)
+	private void deletePiece(Point p)
 	{
 		board[p.y][p.x] = null;
 	}
