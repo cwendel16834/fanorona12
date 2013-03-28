@@ -2,18 +2,13 @@ package twelve.team;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 //class for managing gameplay and game logic
 //receives move info from vBoard and processes
 //tells vBoard what to change visually
 //this will be the interface for client-server model. messages will be decoded and processed here
 //before the visual changes are sent to vBoard.
-public class GameController implements ActionListener, GameTimerListener {
+public class GameController implements GameTimerListener {
 	
 	private Board board;
 	private VisualBoard vBoard;
@@ -111,17 +106,22 @@ public class GameController implements ActionListener, GameTimerListener {
         
         
     }
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+	
+	public boolean player1Turn(){
+		return player1Turn;
 	}
 	
+	/*
+	 * Returns the Board
+	 */
 	public Board getBoard(){
-		return this.board;
+		return board;
 	}
 
+	/*
+	 * Event called when Game Timer Expires
+	 * @see twelve.team.GameTimerListener#TimesUp()
+	 */
 	@Override
 	public void TimesUp() {
 		final TimesUp panel = new TimesUp();				
@@ -144,6 +144,10 @@ public class GameController implements ActionListener, GameTimerListener {
 		player1Turn = !player1Turn;
 	}
 
+	/*
+	 * Event called when the seconds on the GameTimer is decreased
+	 * @see twelve.team.GameTimerListener#secondDecrease(int)
+	 */
 	@Override
 	public void secondDecrease(int timeLeft) {
 		vBoard.setTimer(timeLeft);
