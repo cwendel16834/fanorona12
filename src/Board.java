@@ -43,14 +43,40 @@ public class Board
 			}
 		}
 	}
+		
+	private boolean getAttackers(Piece.Team team)
+	{
+		switch(team)
+		{
+		case WHITE:
+			if(WhiteAttackers.size() > 0)
+				return true;
+			else
+				return false;
+		case BLACK:
+			if(BlackAttackers.size() > 0)
+				return true;
+			else 
+				return false;
+		default:
+				//shouldn't happen
+				break;
+		}
+		return false;
+	}
+	
 	public Board()
 	{
+		WhiteAttackers = new ArrayList<Point>();
+		BlackAttackers = new ArrayList<Point>();
 		board = new Piece[rows][cols];
 		resetBoard();
 	}
 
 	public Board(int r, int c)
 	{
+		WhiteAttackers = new ArrayList<Point>();
+		BlackAttackers = new ArrayList<Point>();
 		rows = r;
 		cols = c;
 		board = new Piece[rows][cols];
@@ -87,6 +113,7 @@ public class Board
 				board[rows/2][i] = new Piece(Piece.Team.WHITE);
 			color = !color;
 		}
+		updateAttackers();
 	}
 	
 	public enum Direction {up,down,left,right,topleft,topright,botleft,botright,none};
@@ -407,6 +434,10 @@ public class Board
 		//check if capture moves are available			
 		if(isValid(start,end))
 		{	
+			Piece p = getPiece(start);
+			Piece.Team opposite = getPiece(start).getOppositeTeam();
+			boolean attacked = false;
+			
 			if(canCapture(start))//if you can capture something with this piece
 			{
 				if(!willAttack(start,end,type))//if you will not attack throw invalid move
@@ -414,14 +445,21 @@ public class Board
 					throw new Exception("Invalid Move");
 				}
 			}
-			Piece p = getPiece(start);
-			Piece.Team opposite = getPiece(start).getOppositeTeam();
-			boolean attacked = false;
-			
+			else //you will not capture something with this piece
+			{
+				//check if this piece is not on it's second consecutive turn
+				if(!p.hasMoved()) //check if any other pieces of same team can move
+				{
+					Piece.Team team = p.getTeam();
+					if(getAttackers(team)) //will return true if the team has other pieces that can capture
+						throw new Exception("Invalid Move"); //because another piece can attack
+				}
+			}		
 			
 			Point target = possibleCapture(start,end,type);
 			board[end.y][end.x] = p; //move the chosen piece to the space that it was moved
 			deletePiece(start);
+			
 			if(target != null)
 			{
 				Direction attack = getDirection(start,target);
@@ -433,15 +471,21 @@ public class Board
 					if(target != null)
 						if(board[target.y][target.x] == null )
 							break;
-					//error here
 				}
 			}
 				
+			updateAttackers();
 			//if you can capture more pieces with the same original piece return true
 			if(canCapture(end) && attacked) //you can move again only if you captured something and you are able to capture again
+			{	
+				p.moved = true;
 				return true;
+			}
 			else
+			{
+				p.moved = false;
 				return false;
+			}
 		}
 		else
 			throw new Exception("Invalid Move");

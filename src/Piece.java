@@ -7,6 +7,7 @@ public class Piece {
 	public Image image;
 	public int x;
 	public int y;
+	public boolean moved = false; //moved will be true when the same piece has moved more than once
 	
 	public enum Team {BLACK, WHITE }
 	
@@ -32,7 +33,10 @@ public class Piece {
 				return null;
 		}
 	}
-	
+	public boolean hasMoved()
+	{
+		return moved;
+	}
 	public Team getTeam() {
 		return team;
 	}
