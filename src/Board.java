@@ -329,8 +329,39 @@ public class Board
 	}
 	
 	public enum moveType {ADVANCE,RETREAT,NONE};
-	//returns true if another capture can be made by the same piece
 	
+	//
+	private boolean willAttack(Point start,Point end,moveType type)
+	{
+		Direction d = getDirection(start,end); //spot ahead
+		Direction b = getOppositeDirection(d); //spot behind
+		Direction attack;
+		Point target;
+		try {
+			target = possibleCapture(start,end,type);
+			//this case should never happen because you should check canCapture before calling this function
+			if(target == null)
+				return false; 
+			attack = getDirection(start,target);
+		} catch (MoveException e) {
+			Point forward = e.ahead;
+			Point backward = e.behind;
+			//if you move in the direction of your target or opposite direction of target behind
+			if(getDirection(start,forward) == d || getDirection(start,backward) == b)
+				return true;
+			else
+				return false;
+			//e.printStackTrace();
+		}
+		//if your move is the same direction as the attack direction
+		//or the opposite direction of your move is the attack direction
+		if(b == attack || d == attack)
+			return true;
+		else
+			return false;
+	}
+	
+	//returns true if another capture can be made by the same piece
 	public boolean move(Point start, Point end) throws Exception,MoveException
 	{
 		return move(start,end,moveType.NONE);
@@ -338,14 +369,19 @@ public class Board
 	
 	public boolean move(Point start, Point end, moveType type) throws Exception,MoveException
 	{
-		//check if capture moves are available
-		boolean attacked = false;
+		//check if capture moves are available			
 		if(isValid(start,end))
-		{
+		{	
+			if(canCapture(start))//if you can capture something with this piece
+			{
+				if(!willAttack(start,end,type))//if you will not attack throw invalid move
+				{
+					throw new Exception("Invalid Move");
+				}
+			}
 			Piece p = getPiece(start);
-			Direction d = getDirection(start,end);
 			Piece.Team opposite = getPiece(start).getOppositeTeam();
-			
+			boolean attacked = false;
 			
 			
 			Point target = possibleCapture(start,end,type);
