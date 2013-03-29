@@ -11,8 +11,16 @@ public class Board
 	private int cols = 9;
 	private ArrayList<Point> WhiteAttackers;
 	private ArrayList<Point> BlackAttackers;
+	private Piece lastMovedPiece;
 	
 	//checks the whole board and fills ArrayLists of each team of pieces that can capture
+	//only one piece should be "moving"
+	//if a piece is "moving" it means it was the last one that moved and it could move one more time
+	private Piece getLastMovedPiece()
+	{
+		return lastMovedPiece;
+	}
+	
 	private void updateAttackers()
 	{
 		WhiteAttackers.clear();
@@ -69,6 +77,7 @@ public class Board
 	{
 		WhiteAttackers = new ArrayList<Point>();
 		BlackAttackers = new ArrayList<Point>();
+		lastMovedPiece = null;
 		board = new Piece[rows][cols];
 		resetBoard();
 	}
@@ -77,6 +86,7 @@ public class Board
 	{
 		WhiteAttackers = new ArrayList<Point>();
 		BlackAttackers = new ArrayList<Point>();
+		lastMovedPiece = null;
 		rows = r;
 		cols = c;
 		board = new Piece[rows][cols];
@@ -431,12 +441,26 @@ public class Board
 	
 	public boolean move(Point start, Point end, moveType type) throws Exception,MoveException
 	{
-		//check if capture moves are available			
+		//check if capture moves are available
+		
 		if(isValid(start,end))
 		{	
+			
 			Piece p = getPiece(start);
 			Piece.Team opposite = getPiece(start).getOppositeTeam();
 			boolean attacked = false;
+			//a moving piece is a piece that moved and returned true because that piece can move again
+			//need to fix that if there is a moving piece in the board, then only that piece can move again
+			// capture something with it, 
+						//if(getLastMovingPiece() == null)//no moving piece
+			
+			//when you advance, or retreat, you should'nt be able to do the reverse to get the other pieces!!
+			//fix!
+			if(lastMovedPiece != null)
+			{
+				if(p != lastMovedPiece)
+					throw new Exception("Invalid Move");
+			}
 			
 			if(canCapture(start))//if you can capture something with this piece
 			{
@@ -448,7 +472,7 @@ public class Board
 			else //you will not capture something with this piece
 			{
 				//check if this piece is not on it's second consecutive turn
-				if(!p.hasMoved()) //check if any other pieces of same team can move
+				if(p != lastMovedPiece) //check if any other pieces of same team can move
 				{
 					Piece.Team team = p.getTeam();
 					if(getAttackers(team)) //will return true if the team has other pieces that can capture
@@ -478,12 +502,12 @@ public class Board
 			//if you can capture more pieces with the same original piece return true
 			if(canCapture(end) && attacked) //you can move again only if you captured something and you are able to capture again
 			{	
-				p.moved = true;
+				lastMovedPiece = p;
 				return true;
 			}
 			else
 			{
-				p.moved = false;
+				lastMovedPiece = null;
 				return false;
 			}
 		}
