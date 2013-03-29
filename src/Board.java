@@ -339,6 +339,7 @@ public class Board
 	public boolean move(Point start, Point end, moveType type) throws Exception,MoveException
 	{
 		//check if capture moves are available
+		boolean attacked = false;
 		if(isValid(start,end))
 		{
 			Piece p = getPiece(start);
@@ -356,6 +357,7 @@ public class Board
 				while(target != null && getPiece(target).getTeam() == opposite) //error here
 				{
 					deletePiece(target);
+					attacked = true;
 					target = getPoint(target,attack);
 					if(target != null)
 						if(board[target.y][target.x] == null )
@@ -365,7 +367,7 @@ public class Board
 			}
 				
 			//if you can capture more pieces with the same original piece return true
-			if(canCapture(end))
+			if(canCapture(end) && attacked) //you can move again only if you captured something and you are able to capture again
 				return true;
 			else
 				return false;
