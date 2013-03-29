@@ -1,6 +1,7 @@
 package twelve.team;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Board
@@ -8,7 +9,40 @@ public class Board
 	private Piece[][] board;
 	private int rows = 5;
 	private int cols = 9;
+	private ArrayList<Point> WhiteAttackers;
+	private ArrayList<Point> BlackAttackers;
 	
+	//checks the whole board and fills ArrayLists of each team of pieces that can capture
+	private void updateAttackers()
+	{
+		WhiteAttackers.clear();
+		BlackAttackers.clear();
+		Point p = new Point();
+		for(int row = 0; row < rows; row++)
+		{
+			for(int col = 0; col < cols; col++)
+			{
+				
+				p.x = col;
+				p.y = row;
+				if(board[p.y][p.x]!= null )
+					if(canCapture(p))
+					{
+						Point attacker = new Point(p);
+						switch(getPiece(attacker).getTeam())
+						{
+						case WHITE:
+							WhiteAttackers.add(attacker);
+							break;
+						case BLACK:
+							BlackAttackers.add(attacker);
+							break;
+						}
+					}
+					
+			}
+		}
+	}
 	public Board()
 	{
 		board = new Piece[rows][cols];
@@ -327,6 +361,7 @@ public class Board
 		}
 		return null;
 	}
+	
 	
 	public enum moveType {ADVANCE,RETREAT,NONE};
 	
