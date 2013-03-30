@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import twelve.team.Board.moveType;
+import twelve.team.Piece.Team;
 
 
 interface GameControllerListener {
@@ -28,6 +29,10 @@ public class GameController implements GameTimerListener {
 	private int player1Wins;
     private int player2Wins;
     private Settings settings;
+    
+    private Team currentTurn = Team.WHITE;
+    
+    //For network games and listeners
     private ArrayList<GameControllerListener> listeners = new ArrayList<GameControllerListener>();
     private ArrayList<Move> oldMoves = new ArrayList<Move>();
     private ArrayList<Move> moves = new ArrayList<Move>();
@@ -149,6 +154,12 @@ public class GameController implements GameTimerListener {
         
     }
 	
+	public Team getTurn(){
+		return currentTurn;
+	}
+	
+	//Should no longer be used
+	@Deprecated
 	public boolean player1Turn(){
 		return player1Turn;
 	}
@@ -163,6 +174,7 @@ public class GameController implements GameTimerListener {
 		if(!bool){
 			oldMoves = moves;
 			moves.clear();
+			currentTurn = currentTurn == Team.WHITE ? Team.BLACK : Team.WHITE;
 			player1Turn = !player1Turn;
 			gameTimer.reset();
 			for(GameControllerListener listener : listeners){

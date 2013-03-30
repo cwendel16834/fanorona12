@@ -5,6 +5,7 @@ public class Settings {
     public GameType gameType;
     public int boardWidth;
     public int boardHeight;
+    public long gameTimer;
     
     public Settings() {
     	gameType = GameType.SINGLE;

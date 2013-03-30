@@ -366,9 +366,9 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 		Point p = e.getPoint();
 		//get starting position here
 		if(boardPanel.PieceExists((movingPiece = boardPanel.closestPiece(p)))){
-			if(!controller.player1Turn() && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.WHITE)
+			if(controller.getTurn() != Team.WHITE && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.WHITE)
 				return;
-			if(controller.player1Turn() && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.BLACK)
+			if(controller.getTurn() == Team.WHITE && controller.getBoard().getBoard()[movingPiece.x][movingPiece.y].getTeam() == Team.BLACK)
 				return;
 			
 			moving = true;
