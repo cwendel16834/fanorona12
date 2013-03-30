@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import twelve.team.Board.moveType;
@@ -69,6 +70,16 @@ public class NetworkGame extends Thread implements GameControllerListener{
 			}
 		} else {
 			//is the client
+			try {
+				Socket client = new Socket("", 4444);
+				
+				
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	
