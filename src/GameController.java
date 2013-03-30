@@ -3,8 +3,15 @@ package twelve.team;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 
 import twelve.team.Board.moveType;
+
+
+interface GameControllerListener {
+	public void onNextTurn();
+	public void onTimeUp();
+}
 
 //class for managing gameplay and game logic
 //receives move info from vBoard and processes
@@ -21,6 +28,12 @@ public class GameController implements GameTimerListener {
 	private int player1Wins;
     private int player2Wins;
     private Settings settings;
+    private ArrayList<GameControllerListener> listeners = new ArrayList<GameControllerListener>();
+    private ArrayList<Move> oldMoves = new ArrayList<Move>();
+    private ArrayList<Move> moves = new ArrayList<Move>();
+    
+    //Disable for no debuging
+    private boolean debug = true;
 	
 	
 	public GameController() {
@@ -146,11 +159,21 @@ public class GameController implements GameTimerListener {
 	
 	public boolean move(Point start, Point end, moveType type) throws MoveException, Exception{
 		boolean bool = board.move(start, end, type);
+		moves.add(new Move(start, end, type));
 		if(!bool){
+			oldMoves = moves;
+			moves.clear();
 			player1Turn = !player1Turn;
 			gameTimer.reset();
+			for(GameControllerListener listener : listeners){
+				listener.onNextTurn();
+			}
 		}
 		return bool;
+	}
+	
+	public ArrayList<Move> getMoves(){
+		return oldMoves;
 	}
 	
 	/*
@@ -158,6 +181,10 @@ public class GameController implements GameTimerListener {
 	 */
 	public Board getBoard(){
 		return board;
+	}
+	
+	public void addGameControllerListener(GameControllerListener listener){
+		listeners.add(listener);
 	}
 
 	/*
@@ -193,6 +220,13 @@ public class GameController implements GameTimerListener {
 	@Override
 	public void secondDecrease(int timeLeft) {
 		vBoard.setTimer(timeLeft);
+	}
+	
+	//For Debuging purposes
+	public void debug(String message){
+		if(debug){
+			System.out.println(message);
+		}
 	}
 	
 };
