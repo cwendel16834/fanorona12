@@ -95,6 +95,9 @@ public class Board
 
 	public void resetBoard()
 	{
+		lastMovedPiece = null;
+		WhiteAttackers.clear();
+		BlackAttackers.clear();
 		for(int i = 0; i < rows/2; i++) //color bottom whites
 		{
 			for(int j = 0; j < cols; j++)
