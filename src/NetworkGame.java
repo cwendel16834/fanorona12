@@ -99,12 +99,19 @@ public class NetworkGame extends Thread implements GameControllerListener{
 						out.println("ILLEGAL");
 						out.println("LOSER");
 					}
-					ready = false;
+					recievedOk = false;
 					if(!processInput(inputLine)){
 						controller.debug("Client move was invalid");
 						out.println("ILLEGAL");
 						out.println("LOSER");
 					}
+				} else if(inputLine.startsWith("S")){
+					if(!recievedOk){
+						controller.debug("Client did not acknowledge last message");
+						out.println("ILLEGAL");
+						out.println("LOSER");
+					}
+					recievedOk = false;
 				}
 			}
 		} catch (IOException e) {
@@ -158,6 +165,9 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	@Override
 	public void onNextTurn() {
 		// TODO Auto-generated method stub
+		if(!enabled)
+			return;
+		
 		while(!ready){
 			//busy loop while not ready
 		}
