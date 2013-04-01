@@ -57,9 +57,10 @@ public class GameTimer extends Thread{
 	
 	public void reset() {
 		t = System.currentTimeMillis() + seconds;
+		if(!valid)
+			this.run();
 		valid = true;
-		if(!this.isAlive())
-			this.start();
+		
 	}
 	
 	public void setActionListener(GameTimerListener al){
