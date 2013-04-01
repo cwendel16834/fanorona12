@@ -1,5 +1,6 @@
 package twelve.team;
 
+import java.awt.Frame;
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,8 +8,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.WindowConstants;
 
 import twelve.team.Board.moveType;
 import twelve.team.Piece.Team;
@@ -23,15 +32,31 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		enabled = enabled_;
 	}
 	
+	public void setIpAndPort(String ip, int port){
+		this.ip = ip;
+		this.port = port;
+	}
+	
+	public void showConnectionSettings(){
+		if(!enabled)
+			return;
+		NetworkPanel panel = new NetworkPanel(new JFrame(), true, this);
+		panel.setVisible(true);
+	}
+	
 	public void run(){
+		if(!enabled)
+			return;
+		
 		String inputLine;
 		ServerSocket server = null;
 		Socket client = null;
-		if(isServer && enabled){
+		if(isServer){
+			
 			//is the server
 			try {
 				//Start the server
-				server = new ServerSocket(4444);
+				server = new ServerSocket(port);
 				
 				//wait for a connection
 				client = server.accept();
@@ -40,7 +65,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				
 				
-				//send initial board settings and weclome messages
+				//send initial board settings and welcome messages
 				Settings settings = controller.getSettings();
 				out.println("WELCOME");
 				out.println("INFO " + settings.boardWidth + " " + settings.boardHeight + " B " + "15000");
@@ -52,7 +77,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		} else {
 			//is the client
 			try {
-				client = new Socket("", 4444);
+				client = new Socket(ip, port);
 				
 				out = new PrintWriter(client.getOutputStream(), true);
 				in = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -83,7 +108,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					
 					int cols = Integer.getInteger(params[1].trim());
 					int rows = Integer.getInteger(params[2].trim());
-					Team team = params[3].equals("W") ? Team.WHITE : Team.BLACK;
+					this.localPlayer = params[3].equals("W") ? Team.WHITE : Team.BLACK;
 					long timerTime = Long.getLong(params[4]);
 					
 					Settings settings = new Settings();
@@ -99,12 +124,16 @@ public class NetworkGame extends Thread implements GameControllerListener{
 						out.println("ILLEGAL");
 						out.println("LOSER");
 					}
-					ready = false;
+					recievedOk = false;
 					if(!processInput(inputLine)){
 						controller.debug("Client move was invalid");
 						out.println("ILLEGAL");
 						out.println("LOSER");
 					}
+				} else {
+					controller.debug("Invalid input recieved from client");
+					out.println("ILLEGAL");
+					out.println("LOSER");
 				}
 			}
 		} catch (IOException e) {
@@ -135,7 +164,23 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				if(moveString.length != 5){
 					return false;
 				}
-				type = moveString[0] == "A" ? moveType.ADVANCE : moveType.RETREAT;
+				
+				switch(moveString[0]){
+				case "A":
+					type = moveType.ADVANCE;
+					break;
+				case "R":
+					type = moveType.RETREAT;
+					break;
+				case "S":
+					type = moveType.SACRIFICE;
+					break;
+				case "P":
+					type = moveType.PAIKA;
+					break;
+				default:
+					type = moveType.NONE;
+				}
 				start = new Point(Integer.getInteger(moveString[1]), Integer.getInteger(moveString[2]));
 				end = new Point(Integer.getInteger(moveString[3]), Integer.getInteger(moveString[4]));
 				
@@ -158,6 +203,9 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	@Override
 	public void onNextTurn() {
 		// TODO Auto-generated method stub
+		if(!enabled)
+			return;
+		
 		while(!ready){
 			//busy loop while not ready
 		}
@@ -189,6 +237,10 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	
 	private PrintWriter out;
 	private BufferedReader in;
+	private String ip;
+	private int port;
+	
+	
 	
 	private boolean ready = false;
 	private boolean recievedOk = false;
@@ -197,4 +249,91 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	private boolean enabled;
 	private Team localPlayer = Team.WHITE;
 	
+}
+
+class NetworkPanel extends JDialog {
+
+    /**
+     * Creates new form NetworkPanel
+     */
+    public NetworkPanel(Frame parent, boolean modal, NetworkGame net) {
+        super(parent, modal);
+        network = net;
+        initComponents();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    private void initComponents() {
+
+        serverIpLabel = new JLabel();
+        serverIp = new JTextField();
+        portLabel = new JLabel();
+        port = new JTextField();
+        okButton = new JButton();
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        serverIpLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        serverIpLabel.setText("Server IP:");
+
+        portLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        portLabel.setText("Port:");
+
+        okButton.setText("Ok");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	String ip = serverIp.getText().trim();
+            	String portString = port.getText();
+            	network.setIpAndPort(ip, Integer.parseInt(portString));
+            	dispose();
+            }
+        });
+
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(serverIpLabel)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(serverIp, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(portLabel)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(port, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(okButton)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(serverIpLabel)
+                    .addComponent(serverIp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(portLabel)
+                    .addComponent(port, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(okButton))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>                        
+
+    // Variables declaration - do not modify                     
+    private JTextField port;
+    private JButton okButton;
+    private JLabel portLabel;
+    private JTextField serverIp;
+    private JLabel serverIpLabel;
+    private NetworkGame network;
+    // End of variables declaration                   
 }
