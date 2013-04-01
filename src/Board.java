@@ -376,16 +376,17 @@ public class Board
 		{
 			if(behind != null && target != null)
 				if(board[target.y][target.x] != null && board[behind.y][behind.x] != null)
-					if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite )
+					if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite)
 					{
-						throw new MoveException(target,behind); //throws the points of both pieces that can be taken
+						if(getPiece(target).sacrificed == false && getPiece(target).sacrificed == false)
+							throw new MoveException(target,behind); //throws the points of both pieces that can be taken
 					}
 		}
 		if(type == moveType.NONE || type == moveType.ADVANCE)
 		{
 			if(target != null)
 				if(board[target.y][target.x] != null)
-					if(board[target.y][target.x].getTeam() == opposite )
+					if(board[target.y][target.x].getTeam() == opposite && getPiece(target).sacrificed == false)
 					{
 						return target;
 					}
@@ -394,7 +395,7 @@ public class Board
 		{
 			if(behind != null)
 				if(board[behind.y][behind.x] != null)
-					if(board[behind.y][behind.x].getTeam() == opposite )
+					if(board[behind.y][behind.x].getTeam() == opposite && getPiece(behind).sacrificed == false)
 					{
 						return behind;
 					}
@@ -445,7 +446,11 @@ public class Board
 	public boolean move(Point start, Point end, moveType type) throws Exception,MoveException
 	{
 		//check if capture moves are available
-		
+		if(type == moveType.SACRIFICE)
+		{
+			getPiece(start).sacrificed = true;
+			return false;
+		}
 		if(isValid(start,end))
 		{	
 			

@@ -7,6 +7,7 @@ public class Piece {
 	public Image image;
 	public int x;
 	public int y;
+	public boolean sacrificed = false;
 	
 	public enum Team {BLACK, WHITE }
 	
