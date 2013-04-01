@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 import twelve.team.Board.moveType;
 import twelve.team.Piece.Team;
 import twelve.team.Settings.GameType;
@@ -200,7 +202,7 @@ public class GameController implements GameTimerListener {
 	 */
 	@Override
 	public void TimesUp() {
-		final TimesUp panel = new TimesUp();				
+		final TimesUp panel = new TimesUp(new JFrame(), true);				
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (dim.width - panel.getWidth())/2;
     	int y = (dim.height - panel.getHeight())/2;

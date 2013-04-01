@@ -91,31 +91,33 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		
 		try {
 			while((inputLine = in.readLine()) != null){
+				controller.debug(inputLine);
 				if(inputLine.equals("READY")){
 					//client is ready to start the game! LETS DO THIS!
 					out.println("BEGIN");
 					ready = true;
 					recievedOk = false;
-				} else if(inputLine.equals("OK")){
+				} else if(inputLine.equals("OK") || inputLine.equals("WELCOME")){
 					recievedOk = true;
 				} else if(inputLine.startsWith("INFO")){
 					String[] params = inputLine.split(" ");
-					if(params.length != 5){
+					if(!recievedOk || params.length != 5){
 						controller.debug("Server sent bad INFO string");
 						out.println("ILLEGAL");
 						out.println("LOSER");
 					}	
 					
-					int cols = Integer.getInteger(params[1].trim());
-					int rows = Integer.getInteger(params[2].trim());
+					int cols = Integer.parseInt(params[1].trim());
+					int rows = Integer.parseInt(params[2].trim());
 					this.localPlayer = params[3].equals("W") ? Team.WHITE : Team.BLACK;
-					long timerTime = Long.getLong(params[4]);
+					long timerTime = Long.parseLong(params[4]);
 					
 					Settings settings = new Settings();
 					settings.boardHeight = rows;
 					settings.boardWidth = cols;
 					settings.gameType = GameType.MULT_CLIENT;
 					settings.gameTimer = timerTime;
+					controller.updateSettings(settings);
 					
 				} else if(inputLine.startsWith("A") || inputLine.startsWith("W")){
 					if(!recievedOk){
@@ -152,7 +154,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	}
 	
 	public boolean processInput(String input){
-		String[] moveStrings = input.split("+");
+		String[] moveStrings = input.split("\\+");
 		String[] moveString;
 		moveType type = moveType.ADVANCE;
 		Point start = new Point();
@@ -181,8 +183,8 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				default:
 					type = moveType.NONE;
 				}
-				start = new Point(Integer.getInteger(moveString[1]), Integer.getInteger(moveString[2]));
-				end = new Point(Integer.getInteger(moveString[3]), Integer.getInteger(moveString[4]));
+				start = new Point(Integer.parseInt(moveString[1]), Integer.parseInt(moveString[2]));
+				end = new Point(Integer.parseInt(moveString[3]), Integer.parseInt(moveString[4]));
 				
 				boolean bool = controller.move(start, end, type);
 				if(!bool && i != moveStrings.length-1){

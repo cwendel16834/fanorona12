@@ -139,6 +139,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         timeLeftLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         optionsButton.setText("Options");
 
@@ -265,6 +266,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         optionsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 controller.showOptions();
+                
             }
         });
         
