@@ -170,11 +170,11 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
         player1Label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         player1Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        player1Label.setText("Player 1 Score: " + player1Wins);
+        player1Label.setText("White Score: " + player1Wins);
 
         player2Label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         player2Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        player2Label.setText("Player 2 Score: " + player2Wins);
+        player2Label.setText("Black Score: " + player2Wins);
 
         currentTurnLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         currentTurnLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -182,7 +182,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
         currentTurn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         currentTurn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        currentTurn.setText("Player 1");
+        currentTurn.setText("White");
 
         statusTextArea.setEditable(false);
         statusTextArea.setColumns(20);
@@ -264,7 +264,9 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         
         optionsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                controller.showOptions();
+                controller.showOptions(true);
+                controller.showBoard();
+                controller.reset();
             }
         });
         

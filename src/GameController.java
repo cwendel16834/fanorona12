@@ -26,7 +26,7 @@ public class GameController implements GameTimerListener {
 	private VisualBoard vBoard;
 	private GameTimer gameTimer;
 	private int turnsPlayed;
-	private boolean player1Turn; //player1 is user
+	//private boolean player1Turn; //player1 is user
 	private int player1Wins;
     private int player2Wins;
     private Settings settings;
@@ -51,7 +51,7 @@ public class GameController implements GameTimerListener {
 		gameTimer = new GameTimer(15000);
 		gameTimer.setActionListener(this);
 		turnsPlayed = 0;
-		player1Turn = true;
+		//player1Turn = true;
 		//initialize board and vBoard
 	}
 	
@@ -59,6 +59,7 @@ public class GameController implements GameTimerListener {
 		board.resetBoard();
 		vBoard.updateBoard();
 		gameTimer.reset();
+		currentTurn = Team.WHITE;
 	}
 	
 	public void startGame() {
@@ -67,7 +68,7 @@ public class GameController implements GameTimerListener {
 	}
 	
 	public void setupGame(){
-		showOptions();
+		showOptions(false);
 		if(settings.gameType == GameType.MULT_SERVER){
 			network = new NetworkGame(this, true, true);
 		} else if(settings.gameType == GameType.MULT_CLIENT){
@@ -110,8 +111,8 @@ public class GameController implements GameTimerListener {
         });
 	}
 	
-	public void showOptions() {
-		SettingsDialog dialog = new SettingsDialog(new javax.swing.JFrame(), true, this);
+	public void showOptions(boolean cancelEnabled) {
+		SettingsDialog dialog = new SettingsDialog(new javax.swing.JFrame(), true, this, cancelEnabled);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
     	int x = (dim.width - dialog.getWidth())/2;
     	int y = (dim.height - dialog.getHeight())/2;
@@ -127,6 +128,9 @@ public class GameController implements GameTimerListener {
 	
 	public void updateSettings(Settings set) {
 		this.settings = set;
+		board = new Board(settings.boardHeight, settings.boardWidth);
+		vBoard.dispose();
+		vBoard = new VisualBoard(this);
 	}
 	
 	public Settings getSettings() {
@@ -154,10 +158,10 @@ public class GameController implements GameTimerListener {
 	}
 	
 	//Should no longer be used
-	@Deprecated
+	/*@Deprecated
 	public boolean player1Turn(){
 		return player1Turn;
-	}
+	}*/
 	
 	public boolean move(Point start, Point end) throws MoveException, Exception{
 		return move(start, end, moveType.NONE);
@@ -169,8 +173,8 @@ public class GameController implements GameTimerListener {
 		if(!bool){
 			oldMoves = moves;
 			moves.clear();
-			currentTurn = currentTurn == Team.WHITE ? Team.BLACK : Team.WHITE;
-			player1Turn = !player1Turn;
+			changeTurn();
+			
 			gameTimer.reset();
 			for(GameControllerListener listener : listeners){
 				listener.onNextTurn();
@@ -194,6 +198,12 @@ public class GameController implements GameTimerListener {
 		listeners.add(listener);
 	}
 
+	private void changeTurn() {
+		currentTurn = (currentTurn == Team.WHITE)	? currentTurn = Team.BLACK : Team.WHITE;
+		String text = currentTurn == Team.WHITE ? "White" : "Black";
+		vBoard.setTurn(text);
+	}
+	
 	/*
 	 * Event called when Game Timer Expires
 	 * @see twelve.team.GameTimerListener#TimesUp()
@@ -217,7 +227,7 @@ public class GameController implements GameTimerListener {
 		while(!panel.isVisible()){}
 		while(panel.isVisible()){}		
 		gameTimer.reset();
-		player1Turn = !player1Turn;
+		changeTurn();
 	}
 
 	/*
