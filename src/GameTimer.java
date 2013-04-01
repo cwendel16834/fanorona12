@@ -42,8 +42,12 @@ public class GameTimer extends Thread{
 			for(int i=0;i<listeners.size();i++){
 				listeners.get(i).TimesUp();
 			}
-			if(!repeat){
-				valid = false;
+			valid = false;
+			while(!valid){
+				try {
+					sleep(50);
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 	}
@@ -57,8 +61,6 @@ public class GameTimer extends Thread{
 	
 	public void reset() {
 		t = System.currentTimeMillis() + seconds;
-		if(!valid)
-			this.run();
 		valid = true;
 		
 	}

@@ -15,6 +15,7 @@ import twelve.team.Settings.GameType;
 interface GameControllerListener {
 	public void onNextTurn();
 	public void onTimeUp();
+	public void onGameWin(Team winner);
 }
 
 //class for managing gameplay and game logic
@@ -79,7 +80,7 @@ public class GameController implements GameTimerListener {
 			network = new NetworkGame(this, false, false);
 		}
 		network.showConnectionSettings();
-		network.run();
+		network.start();
 	}
 	
 	public void showSplash() {
@@ -173,7 +174,8 @@ public class GameController implements GameTimerListener {
 		boolean bool = board.move(start, end, type);
 		moves.add(new Move(start, end, type));
 		if(!bool){
-			oldMoves = moves;
+			oldMoves = new ArrayList<Move>(moves);
+			//oldMoves = moves;
 			moves.clear();
 			changeTurn();
 			
@@ -217,17 +219,7 @@ public class GameController implements GameTimerListener {
 		int x = (dim.width - panel.getWidth())/2;
     	int y = (dim.height - panel.getHeight())/2;
     	panel.setLocation(x,y);
-		java.awt.EventQueue.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				panel.setVisible(true);
-				
-			}
-			
-		});
-		while(!panel.isVisible()){}
-		while(panel.isVisible()){}		
+    	panel.setVisible(true);
 		gameTimer.reset();
 		changeTurn();
 	}
