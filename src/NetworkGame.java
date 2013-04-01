@@ -105,13 +105,10 @@ public class NetworkGame extends Thread implements GameControllerListener{
 						out.println("ILLEGAL");
 						out.println("LOSER");
 					}
-				} else if(inputLine.startsWith("S")){
-					if(!recievedOk){
-						controller.debug("Client did not acknowledge last message");
-						out.println("ILLEGAL");
-						out.println("LOSER");
-					}
-					recievedOk = false;
+				} else {
+					controller.debug("Invalid input recieved from client");
+					out.println("ILLEGAL");
+					out.println("LOSER");
 				}
 			}
 		} catch (IOException e) {
@@ -142,7 +139,23 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				if(moveString.length != 5){
 					return false;
 				}
-				type = moveString[0] == "A" ? moveType.ADVANCE : moveType.RETREAT;
+				
+				switch(moveString[0]){
+				case "A":
+					type = moveType.ADVANCE;
+					break;
+				case "R":
+					type = moveType.RETREAT;
+					break;
+				case "S":
+					type = moveType.SACRIFICE;
+					break;
+				case "P":
+					type = moveType.PAIKA;
+					break;
+				default:
+					type = moveType.NONE;
+				}
 				start = new Point(Integer.getInteger(moveString[1]), Integer.getInteger(moveString[2]));
 				end = new Point(Integer.getInteger(moveString[3]), Integer.getInteger(moveString[4]));
 				

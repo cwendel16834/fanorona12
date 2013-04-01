@@ -400,7 +400,7 @@ public class Board
 	}
 	
 	
-	public enum moveType {ADVANCE,RETREAT,NONE};
+	public enum moveType {ADVANCE,RETREAT,PAIKA,SACRIFICE,NONE};
 	
 	//
 	private boolean willAttack(Point start,Point end,moveType type)
