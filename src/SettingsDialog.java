@@ -17,9 +17,10 @@ public class SettingsDialog extends javax.swing.JDialog {
     /**
      * Creates new form SettingsDialog
      */
-    public SettingsDialog(java.awt.Frame parent, boolean modal, GameController controller) {
+    public SettingsDialog(java.awt.Frame parent, boolean modal, GameController controller, boolean cancelEnabled) {
         super(parent, modal);
         this.controller = controller;
+        this.cancelEnabled = cancelEnabled;
         initComponents();
     }
 
@@ -59,6 +60,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                 btnCancelActionPerformed(evt);
             }
         });
+        btnCancel.setEnabled(cancelEnabled);
         
         Settings settings = controller.getSettings();
 
@@ -159,6 +161,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {
+    	String test = (String)comboWidth.getSelectedItem();
         int width = Integer.parseInt((String)comboWidth.getSelectedItem());
         int height = Integer.parseInt((String)comboHeight.getSelectedItem());
         Settings.GameType type;
@@ -200,6 +203,7 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton radioSingle;
     // End of variables declaration//GEN-END:variables
     private GameController controller;
+    private boolean cancelEnabled;
     private String[] widthChoices = {"1", "3", "5", "7", "9", "11", "13"};
     private String[] heightChoices = {"1", "3", "5", "7", "9", "11", "13"};
 }
