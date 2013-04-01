@@ -30,6 +30,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		controller = c;
 		isServer = isServer_;
 		enabled = enabled_;
+		controller.addGameControllerListener(this);
 	}
 	
 	public void setIpAndPort(String ip, int port){
@@ -57,7 +58,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 			try {
 				//Start the server
 				server = new ServerSocket(port);
-				
+				ready = true;
 				//wait for a connection
 				client = server.accept();
 				
@@ -118,6 +119,8 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					settings.gameType = GameType.MULT_CLIENT;
 					settings.gameTimer = timerTime;
 					controller.updateSettings(settings);
+					controller.showBoard();
+					out.println("OK");
 					
 				} else if(inputLine.startsWith("A") || inputLine.startsWith("W")){
 					if(!recievedOk){
@@ -186,7 +189,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				start = new Point(Integer.parseInt(moveString[1]), Integer.parseInt(moveString[2]));
 				end = new Point(Integer.parseInt(moveString[3]), Integer.parseInt(moveString[4]));
 				
-				boolean bool = controller.move(start, end, type);
+				boolean bool = controller.move(new Point(start.x-1, start.y-1), new Point(end.x-1, end.y-1), type);
 				if(!bool && i != moveStrings.length-1){
 					return false;
 				}
@@ -215,13 +218,13 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		//If current turn != localPlayer, the localPlayer just finished their turn
 		if(controller.getTurn() == localPlayer)
 			return;
-		if(!ready){
+		if(ready){
 			String outputLine = "";
 			ArrayList<Move> moves = controller.getMoves();
 			for(int i=0;i < moves.size();i++){
 				Move move = moves.get(i);
-				outputLine += (move.type == moveType.RETREAT ? "R " : "A ") + move.start.x + " " 
-						+ move.start.x + " " + move.end.x + " " + move.end.y;
+				outputLine += (move.type == moveType.RETREAT ? "R " : "A ") + (move.start.x+1) + " " 
+						+ (move.start.y+1) + " " + (move.end.x+1) + " " + (move.end.y+1);
 				if(i != moves.size()-1)
 					outputLine += " + ";
 			}
@@ -250,6 +253,11 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	private boolean isServer;
 	private boolean enabled;
 	private Team localPlayer = Team.WHITE;
+	@Override
+	public void onGameWin(Team winner) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
 

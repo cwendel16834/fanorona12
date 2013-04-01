@@ -117,7 +117,7 @@ public class BoardPanel extends JPanel {
 					g.drawLine(current.x, current.y, diag.x, diag.y);
 				}
 				
-				if((i+j) % 2 == 0 && i > 0 && i != boardPieces.length-1 && j != boardPieces[i].length-1){
+				if((i+j) % 2 == 0 && i > 0 && i != boardPieces.length-1 && j != boardPieces[i].length-1 && j != 0){
 					Point diag = piecePosition(i+1, j+1);
 					g.drawLine(current.x, current.y, diag.x, diag.y);
 					diag = piecePosition(i-1, j+1);
