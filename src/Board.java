@@ -109,6 +109,11 @@ public class Board
 	}
 	
 	
+	public Piece[][] getBoard(){
+		return board;
+	}
+	
+	
 	//checks the whole board and fills ArrayLists of each team of pieces that can capture
 	//only one piece should be "moving"
 	//if a piece is "moving" it means it was the last one that moved and it could move one more time
@@ -224,6 +229,38 @@ public class Board
 		}
 	}
 	
+	
+	Piece.Team GameOver()
+	{
+		int blackPieces = 0;
+		int whitePieces = 0;
+		Point p = new Point();
+		for(int row = 0; row < rows; row++)
+		{
+			for(int col = 0; col < cols; col++)
+			{
+				p.x = col;
+				p.y = row;
+				switch(getPiece(p).getTeam())
+				{
+				case WHITE:
+					whitePieces++;
+					break;
+				case BLACK:
+					blackPieces++;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		if(whitePieces == 0)
+			return Piece.Team.BLACK;
+		if(blackPieces == 0)
+			return Piece.Team.WHITE;
+		
+		return null; //no winner
+	}
 	//Gets the point with a given starting point and a direction (for lack of a better name)
 	//returns null if point is out of bounds
 	private Point getPoint(Point start, Direction d)
@@ -538,12 +575,6 @@ public class Board
 			throw new Exception("Invalid Move");
 	}
 	
-	
-	
-	
-	public Piece[][] getBoard(){
-		return board;
-	}
 	
 	public static void main(String args[])
 	{
