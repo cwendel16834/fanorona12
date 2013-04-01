@@ -12,6 +12,7 @@ public class Board
 	private ArrayList<Point> WhiteAttackers;
 	private ArrayList<Point> BlackAttackers;
 	private Piece lastMovedPiece;
+	private Point MultipleCaptureStart;
 	
 	//checks the whole board and fills ArrayLists of each team of pieces that can capture
 	//only one piece should be "moving"
@@ -77,6 +78,7 @@ public class Board
 	{
 		WhiteAttackers = new ArrayList<Point>();
 		BlackAttackers = new ArrayList<Point>();
+		MultipleCaptureStart = null;
 		lastMovedPiece = null;
 		board = new Piece[rows][cols];
 		resetBoard();
@@ -86,6 +88,7 @@ public class Board
 	{
 		WhiteAttackers = new ArrayList<Point>();
 		BlackAttackers = new ArrayList<Point>();
+		MultipleCaptureStart = null;
 		lastMovedPiece = null;
 		rows = r;
 		cols = c;
@@ -95,6 +98,7 @@ public class Board
 
 	public void resetBoard()
 	{
+		MultipleCaptureStart = null;
 		lastMovedPiece = null;
 		WhiteAttackers.clear();
 		BlackAttackers.clear();
@@ -378,6 +382,7 @@ public class Board
 				if(board[target.y][target.x] != null && board[behind.y][behind.x] != null)
 					if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite )
 					{
+						MultipleCaptureStart = start;
 						throw new MoveException(target,behind); //throws the points of both pieces that can be taken
 					}
 		}
@@ -465,6 +470,12 @@ public class Board
 					throw new Exception("Invalid Move");
 			}
 			
+			//cannot move back to your starting position once you had to chose a target
+			if(MultipleCaptureStart != null)
+				if(end == MultipleCaptureStart)
+					throw new Exception("Invalid Move");
+			
+			
 			if(canCapture(start))//if you can capture something with this piece
 			{
 				if(!willAttack(start,end,type))//if you will not attack throw invalid move
@@ -510,6 +521,7 @@ public class Board
 			}
 			else
 			{
+				MultipleCaptureStart = null;
 				lastMovedPiece = null;
 				return false;
 			}
