@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import twelve.team.Board.moveType;
 import twelve.team.Piece.Team;
+import twelve.team.Settings.GameType;
 
 
 interface GameControllerListener {
@@ -29,6 +30,7 @@ public class GameController implements GameTimerListener {
 	private int player1Wins;
     private int player2Wins;
     private Settings settings;
+    private NetworkGame network;
     
     private Team currentTurn = Team.WHITE;
     
@@ -42,6 +44,7 @@ public class GameController implements GameTimerListener {
 	
 	
 	public GameController() {
+		settings = new Settings();
 		board = new Board();
 		vBoard = new VisualBoard(this);
 		//vBoard.controller = this;
@@ -49,8 +52,6 @@ public class GameController implements GameTimerListener {
 		gameTimer.setActionListener(this);
 		turnsPlayed = 0;
 		player1Turn = true;
-		settings = new Settings();
-		
 		//initialize board and vBoard
 	}
 	
@@ -60,28 +61,22 @@ public class GameController implements GameTimerListener {
 		gameTimer.reset();
 	}
 	
-	public void startTimer() {
-		player1Turn = true;
-		
-//		player1Turn = gameTimer.getTurn();
-//        while(!Thread.interrupted()){
-//        	if(timeLeft != gameTimer.timeLeft()){
-//        		vBoard.setTimer(gameTimer.timeLeft());
-//        	}
-//        	
-//        	if(player1Turn != gameTimer.getTurn()){
-//        		player1Turn = gameTimer.getTurn();
-//        		if(player1Turn){
-//        			vBoard.setTurn("Player 1");
-//        		} else {
-//        			vBoard.setTurn("Player 2");
-//        		}
-//        	}
-//        }
+	public void startGame() {
+		showBoard();
+		gameTimer.run();
 	}
 	
-	public void startGame() {
-		showBoard();		
+	public void setupGame(){
+		showOptions();
+		if(settings.gameType == GameType.MULT_SERVER){
+			network = new NetworkGame(this, true, true);
+		} else if(settings.gameType == GameType.MULT_CLIENT){
+			network = new NetworkGame(this, false, true);
+		} else {
+			network = new NetworkGame(this, false, false);
+		}
+		network.showConnectionSettings();
+		network.run();
 	}
 	
 	public void showSplash() {
@@ -94,6 +89,7 @@ public class GameController implements GameTimerListener {
     	long StartTime = System.currentTimeMillis();
     	long Timer = 5000;
     	long ElapsedTime = System.currentTimeMillis()- StartTime;
+    	setupGame();
     	while(ElapsedTime <= Timer)
     	{
     		ElapsedTime = System.currentTimeMillis() - StartTime;
@@ -115,12 +111,11 @@ public class GameController implements GameTimerListener {
 	}
 	
 	public void showOptions() {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                
-            }
-        });
 		SettingsDialog dialog = new SettingsDialog(new javax.swing.JFrame(), true, this);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    	int x = (dim.width - dialog.getWidth())/2;
+    	int y = (dim.height - dialog.getHeight())/2;
+    	dialog.setLocation(x,y);
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
