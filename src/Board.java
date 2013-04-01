@@ -75,6 +75,19 @@ public class Board
 		updateAttackers();
 	}
 	
+	
+	public boolean isPaika(Point start, Point end)
+	{
+		try {
+			Point target = possibleCapture(start,end,moveType.NONE);
+			if(target == null)
+				return true;
+			else
+				return false;
+		} catch (MoveException e) {
+			return false;
+		}
+	}
 	//prints Board in Console (testing purposes)
 	public void printBoard()
 	{
@@ -230,7 +243,7 @@ public class Board
 	}
 	
 	
-	Piece.Team GameOver()
+	Piece.Team isGameOver()
 	{
 		int blackPieces = 0;
 		int whitePieces = 0;
