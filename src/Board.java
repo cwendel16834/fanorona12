@@ -9,93 +9,35 @@ public class Board
 	private Piece[][] board;
 	private int rows = 5;
 	private int cols = 9;
-	private ArrayList<Point> WhiteAttackers;
-	private ArrayList<Point> BlackAttackers;
-	private Piece lastMovedPiece;
-	private Point MultipleCaptureStart;
+	private ArrayList<Point> WhiteAttackers = new ArrayList<Point>();
+	private ArrayList<Point> BlackAttackers = new ArrayList<Point>();
+	private Piece lastMovedPiece = null;
+	private Point MultipleCaptureStart = null;
 	
-	//checks the whole board and fills ArrayLists of each team of pieces that can capture
-	//only one piece should be "moving"
-	//if a piece is "moving" it means it was the last one that moved and it could move one more time
-	private Piece getLastMovedPiece()
-	{
-		return lastMovedPiece;
-	}
 	
-	private void updateAttackers()
-	{
-		WhiteAttackers.clear();
-		BlackAttackers.clear();
-		Point p = new Point();
-		for(int row = 0; row < rows; row++)
-		{
-			for(int col = 0; col < cols; col++)
-			{
-				
-				p.x = col;
-				p.y = row;
-				if(board[p.y][p.x]!= null )
-					if(canCapture(p))
-					{
-						Point attacker = new Point(p);
-						switch(getPiece(attacker).getTeam())
-						{
-						case WHITE:
-							WhiteAttackers.add(attacker);
-							break;
-						case BLACK:
-							BlackAttackers.add(attacker);
-							break;
-						}
-					}
-					
-			}
-		}
-	}
-		
-	private boolean getAttackers(Piece.Team team)
-	{
-		switch(team)
-		{
-		case WHITE:
-			if(WhiteAttackers.size() > 0)
-				return true;
-			else
-				return false;
-		case BLACK:
-			if(BlackAttackers.size() > 0)
-				return true;
-			else 
-				return false;
-		default:
-				//shouldn't happen
-				break;
-		}
-		return false;
-	}
+	public enum Direction {up,down,left,right,topleft,topright,botleft,botright,none};
+	public enum moveType {ADVANCE,RETREAT,PAIKA,SACRIFICE,NONE};
+	
+	/*
+		CONSTRUCTORS
+	*/
 	
 	public Board()
 	{
-		WhiteAttackers = new ArrayList<Point>();
-		BlackAttackers = new ArrayList<Point>();
-		MultipleCaptureStart = null;
-		lastMovedPiece = null;
 		board = new Piece[rows][cols];
 		resetBoard();
 	}
 
 	public Board(int r, int c)
 	{
-		WhiteAttackers = new ArrayList<Point>();
-		BlackAttackers = new ArrayList<Point>();
-		MultipleCaptureStart = null;
-		lastMovedPiece = null;
 		rows = r;
 		cols = c;
 		board = new Piece[rows][cols];
 		resetBoard();
 	}
 
+	
+	//resets the board to starting positions
 	public void resetBoard()
 	{
 		MultipleCaptureStart = null;
@@ -133,7 +75,96 @@ public class Board
 		updateAttackers();
 	}
 	
-	public enum Direction {up,down,left,right,topleft,topright,botleft,botright,none};
+	//prints Board in Console (testing purposes)
+	public void printBoard()
+	{
+		for(int i = rows-1; i >= 0; i--)
+		{
+			for(int j = 0; j < cols; j++)
+			{
+				char t = 0;
+				if(board[i][j] == null)
+				{
+					t = ' ';
+				}
+				else
+				{
+					switch(board[i][j].getTeam())
+					{
+					case WHITE:
+						t = 'w';
+						break;
+					case BLACK:
+						t = 'b';
+						break;
+					default:
+						t = ' ';
+						break;
+					}
+				}
+				System.out.print("["+t+"]");
+			}
+			System.out.println();
+		}
+	}
+	
+	
+	//checks the whole board and fills ArrayLists of each team of pieces that can capture
+	//only one piece should be "moving"
+	//if a piece is "moving" it means it was the last one that moved and it could move one more time
+	private void updateAttackers()
+	{
+		WhiteAttackers.clear();
+		BlackAttackers.clear();
+		Point p = new Point();
+		for(int row = 0; row < rows; row++)
+		{
+			for(int col = 0; col < cols; col++)
+			{
+				
+				p.x = col;
+				p.y = row;
+				if(board[p.y][p.x]!= null )
+					if(canCapture(p))
+					{
+						Point attacker = new Point(p);
+						switch(getPiece(attacker).getTeam())
+						{
+						case WHITE:
+							WhiteAttackers.add(attacker);
+							break;
+						case BLACK:
+							BlackAttackers.add(attacker);
+							break;
+						}
+					}
+					
+			}
+		}
+	}
+	
+	//returns true if there are any attackers on a certain team
+	//attackers are pieces that can capture another piece
+	private boolean anyAttackers(Piece.Team team)
+	{
+		switch(team)
+		{
+		case WHITE:
+			if(WhiteAttackers.size() > 0)
+				return true;
+			else
+				return false;
+		case BLACK:
+			if(BlackAttackers.size() > 0)
+				return true;
+			else 
+				return false;
+		default:
+				//shouldn't happen
+				break;
+		}
+		return false;
+	}
 	
 	//returns a Direction from a given starting point and an ending point
 	private static Direction getDirection(Point start, Point end)
@@ -167,37 +198,6 @@ public class Board
 		}
 	}
 	
-	public void printBoard()
-	{
-		for(int i = rows-1; i >= 0; i--)
-		{
-			for(int j = 0; j < cols; j++)
-			{
-				char t = 0;
-				if(board[i][j] == null)
-				{
-					t = ' ';
-				}
-				else
-				{
-					switch(board[i][j].getTeam())
-					{
-					case WHITE:
-						t = 'w';
-						break;
-					case BLACK:
-						t = 'b';
-						break;
-					default:
-						t = ' ';
-						break;
-					}
-				}
-				System.out.print("["+t+"]");
-			}
-			System.out.println();
-		}
-	}
 	//gets the opposite direction from a given direction
 	private Direction getOppositeDirection(Direction d)
 	{
@@ -316,7 +316,7 @@ public class Board
 	//return 0 for no capture, 
 	private boolean canCapture(Point start)
 	{
-		Piece piece = board[start.y][start.x];
+		Piece piece = getPiece(start);
 				
 		Piece.Team opposite = piece.getOppositeTeam();
 		
@@ -326,24 +326,27 @@ public class Board
 		for(Direction d : Direction.values())
 		{
 			Point land = getPoint(start,d); //get point in all directions
-			
 			if( land == start) //when direction is none
 				continue;
 			
-			//if(board[land.y][land.x] == null) //you will land in an empty spot
 			if(isValid(start,land))// checks that the move was legal
 			{
+				
+				if(MultipleCaptureStart != null && land.equals(MultipleCaptureStart))
+					continue;
+				
 				Point target = getPoint(land,d);  //look for targets in the same direction you traveled
 				Point targetBehind = getPoint(start,getOppositeDirection(d)); //from your starting position get the target behind 
+				
 				if(target != null)
-					if(board[target.y][target.x] != null) //make sure target is not null
-						if(board[target.y][target.x].getTeam() == opposite) //check position ahead in the same direction you advanced for opposite team
+					if(getPiece(target) != null) //make sure target is not null
+						if(getPiece(target).getTeam() == opposite) //check position ahead in the same direction you advanced for opposite team
 						{
 							++captureAhead;
 						}
 				if(targetBehind != null)
-					if(board[targetBehind.y][targetBehind.x] != null) //make sure behind is not null
-						if(board[targetBehind.y][targetBehind.x].getTeam() == opposite)
+					if(getPiece(targetBehind) != null) //make sure behind is not null
+						if(getPiece(targetBehind).getTeam() == opposite)
 						{
 							++captureBehind;
 						}
@@ -379,8 +382,8 @@ public class Board
 		if(type == moveType.NONE)
 		{
 			if(behind != null && target != null)
-				if(board[target.y][target.x] != null && board[behind.y][behind.x] != null)
-					if(board[target.y][target.x].getTeam() == opposite && board[behind.y][behind.x].getTeam() == opposite)
+				if(board[target.y][target.x] != null && board[behind.y][behind.x] != null) 
+					if(getPiece(target).getTeam() == opposite && getPiece(behind).getTeam() == opposite)
 					{
 						if(getPiece(target).sacrificed == false && getPiece(target).sacrificed == false)
 						{
@@ -393,7 +396,7 @@ public class Board
 		{
 			if(target != null)
 				if(board[target.y][target.x] != null)
-					if(board[target.y][target.x].getTeam() == opposite && getPiece(target).sacrificed == false)
+					if(getPiece(target).getTeam() == opposite && getPiece(target).sacrificed == false)
 					{
 						return target;
 					}
@@ -401,8 +404,8 @@ public class Board
 		if(type == moveType.NONE || type == moveType.RETREAT)
 		{
 			if(behind != null)
-				if(board[behind.y][behind.x] != null)
-					if(board[behind.y][behind.x].getTeam() == opposite && getPiece(behind).sacrificed == false)
+				if(getPiece(behind) != null)
+					if(getPiece(behind).getTeam() == opposite && getPiece(behind).sacrificed == false)
 					{
 						return behind;
 					}
@@ -410,10 +413,6 @@ public class Board
 		return null;
 	}
 	
-	
-	public enum moveType {ADVANCE,RETREAT,PAIKA,SACRIFICE,NONE};
-	
-	//
 	private boolean willAttack(Point start,Point end,moveType type)
 	{
 		Direction d = getDirection(start,end); //spot ahead
@@ -458,6 +457,7 @@ public class Board
 			getPiece(start).sacrificed = true;
 			return false;
 		}
+		
 		if(isValid(start,end))
 		{	
 			
@@ -469,25 +469,25 @@ public class Board
 			// capture something with it, 
 						//if(getLastMovingPiece() == null)//no moving piece
 			
-			//when you advance, or retreat, you should'nt be able to do the reverse to get the other pieces!!
-			//fix!
 			if(lastMovedPiece != null)
 			{
 				if(p != lastMovedPiece)
-					throw new Exception("Invalid Move");
+					throw new Exception("You can only move the piece that you had initially moved.");
 			}
 			
 			//cannot move back to your starting position once you had to chose a target
 			if(MultipleCaptureStart != null)
-				if(end == MultipleCaptureStart)
+				if(end.equals(MultipleCaptureStart))
 					throw new Exception("Invalid Move");
+			
+			
 			
 			
 			if(canCapture(start))//if you can capture something with this piece
 			{
 				if(!willAttack(start,end,type))//if you will not attack throw invalid move
 				{
-					throw new Exception("Invalid Move");
+					throw new Exception("This piece can attack.");
 				}
 			}
 			else //you will not capture something with this piece
@@ -496,8 +496,8 @@ public class Board
 				if(p != lastMovedPiece) //check if any other pieces of same team can move
 				{
 					Piece.Team team = p.getTeam();
-					if(getAttackers(team)) //will return true if the team has other pieces that can capture
-						throw new Exception("Invalid Move"); //because another piece can attack
+					if(anyAttackers(team)) //will return true if the team has other pieces that can capture
+						throw new Exception("There is another piece that can attack."); //because another piece can attack
 				}
 			}		
 			
@@ -523,6 +523,7 @@ public class Board
 			//if you can capture more pieces with the same original piece return true
 			if(canCapture(end) && attacked) //you can move again only if you captured something and you are able to capture again
 			{	
+				MultipleCaptureStart = null;
 				lastMovedPiece = p;
 				return true;
 			}
