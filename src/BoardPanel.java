@@ -29,12 +29,19 @@ public class BoardPanel extends JPanel {
 		this.drawGrid(g);
 		for(int i=0;i<boardPieces.length;i++){
     		for(int j=0;j<boardPieces[i].length;j++){
-    			if(boardPieces[i][j] == null)
+    			Piece p = boardPieces[i][j];
+    			if(p == null)
     				continue;
-    			if(boardPieces[i][j].getTeam() == Team.WHITE){
-    				g.drawImage(whitePiece, boardPieces[i][j].x-whitePiece.getWidth(null)/2, boardPieces[i][j].y-whitePiece.getHeight(null)/2, null);
-    			} else if(boardPieces[i][j].getTeam() == Team.BLACK){
-    				g.drawImage(blackPiece, boardPieces[i][j].x-blackPiece.getWidth(null)/2, boardPieces[i][j].y-blackPiece.getHeight(null)/2, null);
+    			if(p.getTeam() == Team.WHITE){
+    				if(p.sacrificed)
+    					g.drawImage(sacrificePiece, p.x-blackPiece.getWidth(null)/2, p.y-blackPiece.getHeight(null)/2, null);
+    				else
+    					g.drawImage(whitePiece, p.x-whitePiece.getWidth(null)/2, p.y-whitePiece.getHeight(null)/2, null);
+    			} else if(p.getTeam() == Team.BLACK){
+    				if(p.sacrificed)
+    					g.drawImage(sacrificePiece, p.x-blackPiece.getWidth(null)/2, p.y-blackPiece.getHeight(null)/2, null);
+    				else
+    					g.drawImage(blackPiece, p.x-blackPiece.getWidth(null)/2, p.y-blackPiece.getHeight(null)/2, null);
     			}
     		}
     	}
@@ -61,6 +68,7 @@ public class BoardPanel extends JPanel {
 		try {
     		blackPiece = ImageIO.read(new File("imgs/black_piece.png"));
 			whitePiece = ImageIO.read(new File("imgs/white_piece.png"));
+			sacrificePiece = ImageIO.read(new File("imgs/sacrifice_piece.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Unable to load pieces");
@@ -196,6 +204,7 @@ public class BoardPanel extends JPanel {
 	
 	BufferedImage blackPiece;
 	BufferedImage whitePiece;
+	BufferedImage sacrificePiece;
 	Piece[][] boardPieces;
 	JLabel backgroundLabel;
 }

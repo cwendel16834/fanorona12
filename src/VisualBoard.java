@@ -295,14 +295,14 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Point p = e.getPoint();
-		if(boardPanel.PieceExists(boardPanel.closestPiece(p))){
+		Point p = boardPanel.closestPiece(e.getPoint());
+		if(boardPanel.PieceExists(p)){
 			if(controller.getTurn() != Team.WHITE && controller.getBoard().getBoard()[p.x][p.y].getTeam() == Team.WHITE)
 				return;
 			if(controller.getTurn() == Team.WHITE && controller.getBoard().getBoard()[p.x][p.y].getTeam() == Team.BLACK)
 				return;
 			try {
-				controller.move(p, null, moveType.SACRIFICE);
+				controller.move(reversePoint(p), null, moveType.SACRIFICE);
 			} catch (Exception e1) {
 				statusTextArea.setText("Error while sacrificing piece!");
 				updateBoard();
