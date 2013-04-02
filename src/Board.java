@@ -243,7 +243,7 @@ public class Board
 	}
 	
 	
-	Piece.Team isGameOver()
+	public Piece.Team isGameOver()
 	{
 		int blackPieces = 0;
 		int whitePieces = 0;

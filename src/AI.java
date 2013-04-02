@@ -20,25 +20,25 @@ public class AI implements GameControllerListener{
 		if(!enabled || controller.getTurn() != this.AITeam)
 			return;
 		
-		
+		//AI's turn, lets calculate a move!
 		
 	}
 
 	@Override
 	public void onTimeUp() {
-		// TODO Auto-generated method stub
-		
+		// do nothing.... game will be over
 	}
 
 	@Override
 	public void onGameWin(Team winner) {
-		// TODO Auto-generated method stub
+		// do nothing.... game will be over
 		
 	}
 
 	@Override
 	public void newGame() {
-		// TODO Auto-generated method stub
+		//call onNextTurn(), just in case its the AI's turn
+		onNextTurn();
 		
 	}
 	

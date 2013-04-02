@@ -69,7 +69,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				//send initial board settings and welcome messages
 				Settings settings = controller.getSettings();
 				out.println("WELCOME");
-				out.println("INFO " + settings.boardWidth + " " + settings.boardHeight + " B " + "15000");
+				out.println("INFO " + settings.boardWidth + " " + settings.boardHeight + " B " + settings.gameTimer);
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
