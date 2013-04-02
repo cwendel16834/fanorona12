@@ -39,10 +39,10 @@ public class GameTimer extends Thread{
 					
 				}
 			}
+			valid = false;
 			for(int i=0;i<listeners.size();i++){
 				listeners.get(i).TimesUp();
 			}
-			valid = false;
 			while(!valid){}
 		}
 	}

@@ -183,6 +183,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 			for(int i=0;i<moveStrings.length;i++){
 				moveString = moveStrings[i].trim().split(" ");
 				if(moveString.length != 5){
+					controller.debug("Invalid Move String length: " + moveString.length);
 					return false;
 				}
 				
@@ -201,6 +202,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				}
 				start = new Point(Integer.parseInt(moveString[1]), Integer.parseInt(moveString[2]));
 				end = new Point(Integer.parseInt(moveString[3]), Integer.parseInt(moveString[4]));
+				controller.debug(moveString[0] + " " + (start.x-1) + " " + (start.y-1) + " " + (end.x-1) + " " + (end.y-1));
 				
 				boolean bool = controller.move(new Point(start.x-1, start.y-1), new Point(end.x-1, end.y-1), type);
 				if(!bool && i != moveStrings.length-1){
@@ -213,6 +215,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 			return true;
 		}
 		catch(Exception e){
+			controller.debug(e.getMessage());
 			controller.debug("Client had an invalid move");
 			return false;
 		}
