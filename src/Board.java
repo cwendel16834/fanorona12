@@ -2,6 +2,7 @@ package twelve.team;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import twelve.team.Piece.Team;
@@ -417,7 +418,7 @@ public class Board
 			return false;
 	}
 	
-	public ArrayList<Piece> getTeamPieces(Team team) {
+	private ArrayList<Piece> getTeamPieces(Team team) {
 		
 		ArrayList<Piece> pieces = new ArrayList<Piece>();
 		
@@ -433,27 +434,45 @@ public class Board
 	}
 	
 	private ArrayList<Move> getAdjacentMoves(Piece p) {
-		ArrayList<Move> moves = new ArrayList<Move>();
+		ArrayList<Move> moves = new ArrayList<Move>(); //non-capturing moves
+		ArrayList<Move> captures = new ArrayList<Move>(); //capturing moves
+		
 		Point loc = new Point(p.x, p.y);
 
 		
 		for (Direction dir : Direction.values()) {
 			Point newPoint = getPoint(loc, dir);
 			if (newPoint != null && isValid(loc, newPoint)){
-				//moves.add(new Move(loc, newPoint, ))
+				if(isPaika(loc, newPoint)) captures.add(new Move(loc, newPoint, moveType.PAIKA));
+				else if (isRetreating(loc, newPoint, moveType.RETREAT)) captures.add(new Move(loc, newPoint, moveType.PAIKA));
+				else if (getPiece(newPoint) == null) moves.add(new Move(loc, newPoint, moveType.NONE));
+				else captures.add(new Move(loc, newPoint, moveType.ADVANCE));
 			}
 		}
 		
-		return moves;
+		if(captures.size() > 0)
+			return captures;
+		else
+			return moves;
 	}
 	
-	public ArrayList<Move> getTeamMoves(Team team) {
+	private ArrayList<Move> getTeamMoves(Team team) {
 		
-		ArrayList<Piece> pieces = getTeamPieces(team);
+		ArrayList<Move> teamMoves = new ArrayList<Move>();
 		
+		for (Piece p : getTeamPieces(team)) {
+			teamMoves.addAll(getAdjacentMoves(p));
+		}
 		
+		return teamMoves;
+	}
+	
+	public Move getRandomMove(Team team) {
+		ArrayList<Move> moves = getTeamMoves(team);
 		
-		return null;
+		Random rand = new Random(System.currentTimeMillis());
+		
+		return moves.get(rand.nextInt(moves.size()));
 	}
 	
 	private void deletePiece(Point p)
