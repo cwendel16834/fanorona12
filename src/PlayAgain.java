@@ -4,27 +4,35 @@
  */
 package twelve.team;
 
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
+
+import twelve.team.Piece.Team;
 
 
 /**
  *
  * @author mjmjelde
  */
-public class PlayAgain extends JPanel {
+public class PlayAgain extends JDialog {
 
 	private static final long serialVersionUID = 5683250577519696618L;
 	
 	/**
      * Creates new form PlayAgain
      */
-    public PlayAgain() {
+    public PlayAgain(Frame parent, boolean m, Team winner) {
+    	super(parent, m);
+    	this.winner = winner;
         initComponents();
     }
                       
@@ -33,20 +41,50 @@ public class PlayAgain extends JPanel {
         jToggleButton1 = new JToggleButton();
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
-        jButton1 = new JButton();
-        jButton2 = new JButton();
+        yesButton = new JButton();
+        noButton = new JButton();
 
         jToggleButton1.setText("jToggleButton1");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setText("Player x Wins!");
+        switch(winner){
+		case BLACK:
+			jLabel1.setText("Black Wins!");
+			break;
+		case WHITE:
+			jLabel1.setText("White Wins!");
+			break;
+		default:
+			jLabel1.setText("Game was a Tie!");
+			break;
+        
+        }
+        
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("Play again?");
 
-        jButton1.setText("Yes");
+        yesButton.setText("Yes");
+        yesButton.addActionListener(new ActionListener(){
 
-        jButton2.setText("No");
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				playAgain = true;
+				setVisible(false);
+			}
+        	
+        });
+
+        noButton.setText("No");
+        noButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				playAgain = false;
+				setVisible(false);
+			}
+        	
+        });
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -58,13 +96,13 @@ public class PlayAgain extends JPanel {
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(yesButton)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(noButton)))
                 .addContainerGap())
         );
 
-        layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton1, jButton2});
+        layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {yesButton, noButton});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -75,21 +113,23 @@ public class PlayAgain extends JPanel {
                 .addComponent(jLabel2)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(yesButton)
+                    .addComponent(noButton))
                 .addContainerGap())
         );
+        
+        pack();
+    }
+    
+    public boolean playAgain(){
+    	return playAgain;
     }
 
-    
-    private void setLayout(GroupLayout layout) {
-		// TODO Auto-generated method stub
-		
-	}
 
-
-	private JButton jButton1;
-    private JButton jButton2;
+    private boolean playAgain = false;
+    private Team winner;
+	private JButton yesButton;
+    private JButton noButton;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JToggleButton jToggleButton1;                

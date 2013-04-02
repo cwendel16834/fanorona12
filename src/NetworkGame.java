@@ -100,6 +100,19 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					recievedOk = false;
 				} else if(inputLine.equals("OK") || inputLine.equals("WELCOME")){
 					recievedOk = true;
+				} else if(inputLine.equals("ILLEGAL")){
+					//uh oh, we screwed up
+					if(isServer){
+						out.println("WINNER");
+					}
+				} else if(inputLine.equals("TIME")){
+					
+				} else if(inputLine.equals("WINNER")){
+					//we win!
+					controller.incrementWins(localPlayer);
+				} else if(inputLine.equals("LOSER")){
+					// we lose :(
+					controller.incrementWins(localPlayer == Team.BLACK ? Team.WHITE : Team.BLACK);
 				} else if(inputLine.startsWith("INFO")){
 					String[] params = inputLine.split(" ");
 					if(!recievedOk || params.length != 5){
@@ -107,6 +120,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 						out.println("ILLEGAL");
 						out.println("LOSER");
 					}	
+					ready = true;
 					
 					int cols = Integer.parseInt(params[1].trim());
 					int rows = Integer.parseInt(params[2].trim());
@@ -122,7 +136,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					controller.showBoard();
 					out.println("OK");
 					
-				} else if(inputLine.startsWith("A") || inputLine.startsWith("W")){
+				} else if(inputLine.startsWith("A") || inputLine.startsWith("W") || inputLine.startsWith("S") || inputLine.startsWith("P")){
 					if(!recievedOk){
 						//client did not acknowledge last message
 						controller.debug("Client did not acknowledge last message");
@@ -130,7 +144,9 @@ public class NetworkGame extends Thread implements GameControllerListener{
 						out.println("LOSER");
 					}
 					recievedOk = false;
+					out.println("OK");
 					if(!processInput(inputLine)){
+						ready = true;
 						controller.debug("Client move was invalid");
 						out.println("ILLEGAL");
 						out.println("LOSER");
@@ -180,9 +196,6 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				case "S":
 					type = moveType.SACRIFICE;
 					break;
-				case "P":
-					type = moveType.PAIKA;
-					break;
 				default:
 					type = moveType.NONE;
 				}
@@ -223,7 +236,27 @@ public class NetworkGame extends Thread implements GameControllerListener{
 			ArrayList<Move> moves = controller.getMoves();
 			for(int i=0;i < moves.size();i++){
 				Move move = moves.get(i);
-				outputLine += (move.type == moveType.RETREAT ? "R " : "A ") + (move.start.x+1) + " " 
+				char moveChar;
+				switch(move.type){
+				case ADVANCE:
+				case NONE:
+					moveChar = 'A';
+					break;
+				case PAIKA:
+					moveChar = 'P';
+					break;
+				case RETREAT:
+					moveChar = 'R';
+					break;
+				case SACRIFICE:
+					moveChar = 'S';
+					break;
+				default:
+					moveChar = 'A';
+					break;
+				
+				}
+				outputLine += moveChar + " " + (move.start.x+1) + " " 
 						+ (move.start.y+1) + " " + (move.end.x+1) + " " + (move.end.y+1);
 				if(i != moves.size()-1)
 					outputLine += " + ";
@@ -238,6 +271,30 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		// TODO Auto-generated method stub
 		if(!ready || !enabled)
 			return;
+		if(controller.getTurn() == localPlayer)
+			return;
+		if(!isServer)
+			return;
+		out.println("TIME");
+		out.println("LOSER");
+	}
+	
+	@Override
+	public void onGameWin(Team winner) {
+		if(!isServer)
+			return;
+		if(winner == null){
+			out.println("TIE");
+		} else if(winner == localPlayer){
+			out.println("LOSER");
+		} else {
+			out.println("WINNER");
+		}
+	}
+	
+	@Override
+	public void newGame() {
+				
 	}
 	
 	private PrintWriter out;
@@ -253,11 +310,8 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	private boolean isServer;
 	private boolean enabled;
 	private Team localPlayer = Team.WHITE;
-	@Override
-	public void onGameWin(Team winner) {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
 	
 }
 

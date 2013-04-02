@@ -16,6 +16,7 @@ interface GameControllerListener {
 	public void onNextTurn();
 	public void onTimeUp();
 	public void onGameWin(Team winner);
+	public void newGame();
 }
 
 //class for managing gameplay and game logic
@@ -28,10 +29,10 @@ public class GameController implements GameTimerListener {
 	private Board board;
 	private VisualBoard vBoard;
 	private GameTimer gameTimer;
-	private int turnsPlayed;
+	private int turnsPlayed = 0;
 	//private boolean player1Turn; //player1 is user
-	private int player1Wins;
-    private int player2Wins;
+	private int whiteWins = 0;
+    private int blackWins = 0;
     private Settings settings;
     private NetworkGame network;
     
@@ -63,6 +64,10 @@ public class GameController implements GameTimerListener {
 		vBoard.updateBoard();
 		gameTimer.reset();
 		currentTurn = Team.WHITE;
+		
+		for(GameControllerListener list : listeners){
+			list.newGame();
+		}
 	}
 	
 	public void startGame() {
@@ -160,20 +165,36 @@ public class GameController implements GameTimerListener {
 		return currentTurn;
 	}
 	
-	//Should no longer be used
-	/*@Deprecated
-	public boolean player1Turn(){
-		return player1Turn;
-	}*/
+	public int getWins(Team team){
+		if(team == Team.BLACK)
+			return blackWins;
+		else
+			return whiteWins;
+	}
+	
+	public void incrementWins(Team team){
+		if(team == Team.BLACK)
+			blackWins++;
+		else
+			whiteWins++;
+	}
 	
 	public boolean move(Point start, Point end) throws MoveException, Exception{
 		return move(start, end, moveType.NONE);
 	}
 	
 	public boolean move(Point start, Point end, moveType type) throws MoveException, Exception{
-		boolean bool = board.move(start, end, type);
-		moves.add(new Move(start, end, type));
-		if(!bool){
+		boolean move = false;
+		if(type == moveType.NONE && board.isPaika(start, end)){
+			move = board.move(start, end, type);
+			moves.add(new Move(start, end, moveType.PAIKA));
+		} else {
+			move = board.move(start, end, type);
+			moves.add(new Move(start, end, type));
+		}
+		
+		if(!move){
+			turnsPlayed++;
 			oldMoves = new ArrayList<Move>(moves);
 			//oldMoves = moves;
 			moves.clear();
@@ -183,8 +204,41 @@ public class GameController implements GameTimerListener {
 			for(GameControllerListener listener : listeners){
 				listener.onNextTurn();
 			}
+			Team winner = board.isGameOver();
+			if(winner != null){
+				incrementWins(winner);
+				for(GameControllerListener listener : listeners){
+					listener.onGameWin(winner);
+				}
+				PlayAgain dial = new PlayAgain(new JFrame(), true, winner);
+				dial.setVisible(true);
+				if(dial.playAgain()){
+					board.resetBoard();
+					for(GameControllerListener listener : listeners){
+						listener.newGame();
+					}
+				} else {
+					System.exit(0);
+				}
+			}
+			if(turnsPlayed > settings.boardHeight*10){
+				for(GameControllerListener listener : listeners){
+					listener.onGameWin(null);
+				}
+				PlayAgain dial = new PlayAgain(new JFrame(), true, winner);
+				dial.setVisible(true);
+				if(dial.playAgain()){
+					board.resetBoard();
+					for(GameControllerListener listener : listeners){
+						listener.newGame();
+					}
+				} else {
+					System.exit(0);
+				}
+			}
 		}
-		return bool;
+		vBoard.updateBoard();
+		return move;
 	}
 	
 	public ArrayList<Move> getMoves(){
