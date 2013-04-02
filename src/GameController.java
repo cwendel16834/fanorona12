@@ -195,7 +195,7 @@ public class GameController implements GameTimerListener {
 			moves.add(new Move(start, end, type));
 		}
 		
-		if(!move){
+		if(!move){ //turn is over
 			turnsPlayed++;
 			oldMoves = new ArrayList<Move>(moves);
 			//oldMoves = moves;
@@ -206,6 +206,9 @@ public class GameController implements GameTimerListener {
 			for(GameControllerListener listener : listeners){
 				listener.onNextTurn();
 			}
+			
+			System.out.println("About to check gameover");
+			
 			Team winner = board.isGameOver();
 			if(winner != null){
 				incrementWins(winner);
@@ -289,7 +292,7 @@ public class GameController implements GameTimerListener {
 		vBoard.setTimer(timeLeft);
 	}
 	
-	//For Debuging purposes
+	//For Debugging purposes
 	public void debug(String message){
 		if(debug){
 			System.out.println(message);

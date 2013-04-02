@@ -254,6 +254,7 @@ public class Board
 			{
 				p.x = col;
 				p.y = row;
+				if (getPiece(p)== null) continue;
 				switch(getPiece(p).getTeam())
 				{
 				case WHITE:
@@ -267,6 +268,7 @@ public class Board
 				}
 			}
 		}
+		System.out.format("White: %d, Black: %d\n", whitePieces, blackPieces );
 		if(whitePieces == 0)
 			return Piece.Team.BLACK;
 		if(blackPieces == 0)

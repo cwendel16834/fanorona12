@@ -4,13 +4,8 @@
  */
 package twelve.team;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -18,7 +13,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -28,12 +22,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.LayoutStyle;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import twelve.team.Board.moveType;
@@ -102,7 +92,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
         try {
 			boardBackground.setIcon(new ImageIcon(ImageIO.read(new File("imgs/board.png"))));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} // NOI18N
 
@@ -286,7 +275,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     private JTextArea statusTextArea;
     private Point movingPiece;
     private boolean moving;
-    private Point startPosition;
     
     // End of variables declaration                   
 	@Override
@@ -338,7 +326,6 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		// check if the movement was valid using starting position and ending position
 		if(!moving)
 			return;
@@ -370,7 +357,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 				//e1.printStackTrace();
 			} catch (Exception e1) {
 				statusTextArea.setText("Invalid Move (e1)");
-				//e1.printStackTrace();
+				e1.printStackTrace();
 			}
 			updateBoard();
 			
