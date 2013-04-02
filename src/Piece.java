@@ -8,6 +8,7 @@ public class Piece {
 	public int x;
 	public int y;
 	public boolean sacrificed = false;
+	public boolean nextTurn = false;
 	
 	public enum Team {BLACK, WHITE }
 	

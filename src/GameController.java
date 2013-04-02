@@ -199,6 +199,7 @@ public class GameController implements GameTimerListener {
 		}
 		
 		if(!move){ //turn is over
+			board.nextTurn();
 			turnsPlayed++;
 			oldMoves = new ArrayList<Move>(moves);
 			//oldMoves = moves;
@@ -282,7 +283,7 @@ public class GameController implements GameTimerListener {
     	int y = (dim.height - panel.getHeight())/2;
     	panel.setLocation(x,y);
     	panel.setVisible(true);
-    	board.nextMove();
+    	board.nextTurn();
 		gameTimer.reset();
 		vBoard.updateBoard();
 		changeTurn();

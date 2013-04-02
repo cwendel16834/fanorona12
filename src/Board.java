@@ -129,9 +129,18 @@ public class Board
 		return board;
 	}
 	
-	public void nextMove(){
+	public void nextTurn(){
 		MultipleCaptureStart = null;
 		lastMovedPiece = null;
+		for(int i=0;i<board.length;i++){
+			for(int j=0;j<board[i].length;j++){
+				if(board[i][j] != null && board[i][j].sacrificed && board[i][j].nextTurn){
+					board[i][j] = null;
+				} else if(board[i][j] != null && board[i][j].sacrificed){
+					board[i][j].nextTurn = true;
+				}
+			}
+		}
 	}
 	
 	
