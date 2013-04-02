@@ -113,8 +113,8 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
     	
     	
-    	player1Wins = 0;
-    	player2Wins = 0;
+    	whiteWins = controller.getWhiteWins();
+    	blackWins = controller.getBlackWins();
     	
     	try {
     		blackPiece = ImageIO.read(new File("imgs/black_piece.png"));
@@ -171,11 +171,11 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
         player1Label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         player1Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        player1Label.setText("White Score: " + player1Wins);
+        player1Label.setText("White Score: " + whiteWins);
 
         player2Label.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         player2Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        player2Label.setText("Black Score: " + player2Wins);
+        player2Label.setText("Black Score: " + blackWins);
 
         currentTurnLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         currentTurnLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -299,6 +299,11 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     	return Math.pow((a.x-b.x), 2) + Math.pow(a.y-b.y, 2);
     }
     
+    public void updateScore(int wWins, int bWins){
+    	player1Label.setText("White Score: " + whiteWins);
+    	player2Label.setText("Black Score: " + blackWins);
+    }
+    
     // Variables declaration - do not modify   
     
     //logical components -- should not be here, move to gameController
@@ -306,8 +311,8 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     GameController controller;
     
     //data for visuals
-    private int player1Wins;
-    private int player2Wins;
+    private int whiteWins;
+    private int blackWins;
     private int timeLeft;
     
     //private Board gameBoard;

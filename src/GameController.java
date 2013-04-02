@@ -30,8 +30,8 @@ public class GameController implements GameTimerListener {
 	private GameTimer gameTimer;
 	private int turnsPlayed;
 	//private boolean player1Turn; //player1 is user
-	private int player1Wins;
-    private int player2Wins;
+	private int WhiteWins;
+    private int BlackWins;
     private Settings settings;
     private NetworkGame network;
     
@@ -50,12 +50,8 @@ public class GameController implements GameTimerListener {
 		settings = new Settings();
 		board = new Board();
 		vBoard = new VisualBoard(this);
-		//vBoard.controller = this;
 		gameTimer = new GameTimer(15000);
 		gameTimer.setActionListener(this);
-		turnsPlayed = 0;
-		//player1Turn = true;
-		//initialize board and vBoard
 	}
 	
 	public void reset(){
@@ -63,6 +59,7 @@ public class GameController implements GameTimerListener {
 		vBoard.updateBoard();
 		gameTimer.reset();
 		currentTurn = Team.WHITE;
+		turnsPlayed = 0;
 	}
 	
 	public void startGame() {
@@ -114,6 +111,11 @@ public class GameController implements GameTimerListener {
         });
 	}
 	
+	public void resetScore() {
+		WhiteWins = 0;
+		BlackWins = 0;
+	}
+	
 	public void showOptions(boolean cancelEnabled) {
 		SettingsDialog dialog = new SettingsDialog(new javax.swing.JFrame(), true, this, cancelEnabled);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -158,6 +160,14 @@ public class GameController implements GameTimerListener {
 	
 	public Team getTurn(){
 		return currentTurn;
+	}
+	
+	public int getWhiteWins(){
+		return WhiteWins;
+	}
+	
+	public int getBlackWins(){
+		return BlackWins;
 	}
 	
 	//Should no longer be used
