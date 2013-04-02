@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import twelve.team.Piece.Team;
+
 public class Board
 {
 	private Piece[][] board;
@@ -408,6 +410,45 @@ public class Board
 			return true;
 		else 
 			return false;
+	}
+	
+	public ArrayList<Piece> getTeamPieces(Team team) {
+		
+		ArrayList<Piece> pieces = new ArrayList<Piece>();
+		
+		for (Piece [] row : board) {
+			for (Piece p : row) {
+				if(p.getTeam() == team) {
+					pieces.add(p);
+				}
+			}
+		}
+		
+		return pieces;
+	}
+	
+	private ArrayList<Move> getAdjacentMoves(Piece p) {
+		ArrayList<Move> moves = new ArrayList<Move>();
+		Point loc = new Point(p.x, p.y);
+
+		
+		for (Direction dir : Direction.values()) {
+			Point newPoint = getPoint(loc, dir);
+			if (newPoint != null && isValid(loc, newPoint)){
+				//moves.add(new Move(loc, newPoint, ))
+			}
+		}
+		
+		return moves;
+	}
+	
+	public ArrayList<Move> getTeamMoves(Team team) {
+		
+		ArrayList<Piece> pieces = getTeamPieces(team);
+		
+		
+		
+		return null;
 	}
 	
 	private void deletePiece(Point p)
