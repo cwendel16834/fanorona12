@@ -427,50 +427,48 @@ public class Board
 			return false;
 	}
 	
-	private ArrayList<Piece> getTeamPieces(Team team) {
-		
-		ArrayList<Piece> pieces = new ArrayList<Piece>();
-		
-		for (Piece [] row : board) {
-			for (Piece p : row) {
-				if(p.getTeam() == team) {
-					pieces.add(p);
-				}
-			}
-		}
-		
-		return pieces;
-	}
-	
-	private ArrayList<Move> getAdjacentMoves(Piece p) {
-		ArrayList<Move> moves = new ArrayList<Move>(); //non-capturing moves
-		ArrayList<Move> captures = new ArrayList<Move>(); //capturing moves
-		
-		Point loc = new Point(p.x, p.y);
-
-		
-		for (Direction dir : Direction.values()) {
-			Point newPoint = getPoint(loc, dir);
-			if (newPoint != null && isValid(loc, newPoint)){
-				if(isPaika(loc, newPoint)) captures.add(new Move(loc, newPoint, moveType.PAIKA));
-				else if (isRetreating(loc, newPoint, moveType.RETREAT)) captures.add(new Move(loc, newPoint, moveType.PAIKA));
-				else if (getPiece(newPoint) == null) moves.add(new Move(loc, newPoint, moveType.NONE));
-				else captures.add(new Move(loc, newPoint, moveType.ADVANCE));
-			}
-		}
-		
-		if(captures.size() > 0)
-			return captures;
-		else
-			return moves;
-	}
-	
 	private ArrayList<Move> getTeamMoves(Team team) {
 		
-		ArrayList<Move> teamMoves = new ArrayList<Move>();
 		
-		for (Piece p : getTeamPieces(team)) {
-			teamMoves.addAll(getAdjacentMoves(p));
+		
+		ArrayList<Move> teamMoves = new ArrayList<Move>();
+		boolean captureMoves = false;
+		
+		for(int i=0;i<board.length;i++) {
+			for(int j=0;j<board[i].length;j++){
+				if(board[i][j] != null && board[i][j].getTeam() == team){
+					Point loc = new Point(j, i);
+					if(lastMovedPiece != null && getPiece(loc) != lastMovedPiece)
+						continue;
+					
+					
+					ArrayList<Move> moves = new ArrayList<Move>(); //non-capturing moves
+					ArrayList<Move> captures = new ArrayList<Move>(); //capturing moves
+					
+					for (Direction dir : Direction.values()) {
+						Point newPoint = getPoint(loc, dir);
+						if (newPoint != null && isValid(loc, newPoint)){
+							if(isPaika(loc, newPoint)) 
+								moves.add(new Move(loc, newPoint, moveType.PAIKA));
+							else if (isRetreating(loc, newPoint, moveType.RETREAT)) 
+								captures.add(new Move(loc, newPoint, moveType.PAIKA));
+							else 
+								captures.add(new Move(loc, newPoint, moveType.ADVANCE));
+						}
+					}
+					
+					if(captures.size() > 0){
+						if(!captureMoves){
+							captureMoves = true;
+							teamMoves.clear();
+						}
+						teamMoves.addAll(captures);
+					} else {
+						if(!captureMoves)
+							teamMoves.addAll(moves);
+					}
+				}
+			}
 		}
 		
 		return teamMoves;
@@ -478,6 +476,8 @@ public class Board
 	
 	public Move getRandomMove(Team team) {
 		ArrayList<Move> moves = getTeamMoves(team);
+		if(moves.size() < 1)
+			return null;
 		
 		Random rand = new Random(System.currentTimeMillis());
 		

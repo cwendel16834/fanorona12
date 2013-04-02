@@ -369,7 +369,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 				//e1.printStackTrace();
 			} catch (Exception e1) {
 				statusTextArea.setText(e1.getMessage());
-				//e1.printStackTrace();
+				e1.printStackTrace();
 			}
 			updateBoard();
 			

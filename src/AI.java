@@ -21,11 +21,14 @@ public class AI implements GameControllerListener{
 			return;
 		
 		//AI's turn, lets calculate a move!
-		Move move = controller.getBoard().getRandomMove(AITeam);
-		try {
-			controller.move(move.start, move.end);
-		} catch (Exception e) {
-			e.printStackTrace();
+		boolean moveAgain = true;
+		while(moveAgain){
+			Move move = controller.getBoard().getRandomMove(AITeam);
+			try {
+				moveAgain = controller.move(move.start, move.end);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

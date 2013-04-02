@@ -118,7 +118,6 @@ public class PlayAgain extends JDialog {
                 .addContainerGap())
         );
         
-        pack();
     }
     
     public boolean playAgain(){

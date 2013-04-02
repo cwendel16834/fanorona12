@@ -29,6 +29,7 @@ public class GameController implements GameTimerListener {
 	private Board board;
 	private VisualBoard vBoard;
 	private GameTimer gameTimer;
+	private AI gameAI;
 	private int turnsPlayed = 0;
 	//private boolean player1Turn; //player1 is user
 
@@ -54,6 +55,7 @@ public class GameController implements GameTimerListener {
 		vBoard = new VisualBoard(this);
 		gameTimer = new GameTimer(15000);
 		gameTimer.setActionListener(this);
+		gameAI = new AI(this, Team.BLACK, false);
 	}
 	
 	public void reset(){
@@ -79,6 +81,7 @@ public class GameController implements GameTimerListener {
 		} else if(settings.gameType == GameType.MULT_CLIENT){
 			network = new NetworkGame(this, false, true);
 		} else {
+			gameAI = new AI(this, Team.BLACK, true);
 			network = new NetworkGame(this, false, false);
 		}
 		network.showConnectionSettings();
@@ -208,7 +211,8 @@ public class GameController implements GameTimerListener {
 			
 			gameTimer.reset();
 			for(GameControllerListener listener : listeners){
-				listener.onNextTurn();
+				if(listener != null)
+					listener.onNextTurn();
 			}
 			
 			System.out.println("About to check gameover");
