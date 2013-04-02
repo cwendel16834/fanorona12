@@ -44,7 +44,7 @@ public class GameController implements GameTimerListener {
     private ArrayList<Move> oldMoves = new ArrayList<Move>();
     private ArrayList<Move> moves = new ArrayList<Move>();
     
-    //Disable for no debuging
+    //Disable for no debugging
     private boolean debug = true;
 	
 	
