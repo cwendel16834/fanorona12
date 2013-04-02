@@ -190,6 +190,9 @@ public class GameController implements GameTimerListener {
 		if(type == moveType.NONE && board.isPaika(start, end)){
 			move = board.move(start, end, type);
 			moves.add(new Move(start, end, moveType.PAIKA));
+		} else if(type == moveType.NONE && board.isRetreating(start, end, type)){
+			move = board.move(start, end, moveType.RETREAT);
+			moves.add(new Move(start, end, moveType.RETREAT));
 		} else {
 			move = board.move(start, end, type);
 			moves.add(new Move(start, end, type));
@@ -276,7 +279,9 @@ public class GameController implements GameTimerListener {
     	int y = (dim.height - panel.getHeight())/2;
     	panel.setLocation(x,y);
     	panel.setVisible(true);
+    	board.nextMove();
 		gameTimer.reset();
+		vBoard.updateBoard();
 		changeTurn();
 	}
 

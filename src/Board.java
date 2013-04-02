@@ -126,6 +126,11 @@ public class Board
 		return board;
 	}
 	
+	public void nextMove(){
+		MultipleCaptureStart = null;
+		lastMovedPiece = null;
+	}
+	
 	
 	//checks the whole board and fills ArrayLists of each team of pieces that can capture
 	//only one piece should be "moving"
@@ -461,6 +466,19 @@ public class Board
 					}
 		}
 		return null;
+	}
+	
+	public boolean isRetreating(Point start, Point end, moveType type){
+		Direction d = getDirection(start, end);
+		Point target;
+		try{
+			target = possibleCapture(start, end, type);
+			if(target == null)
+				return false;
+			return d != getDirection(start, target);
+		} catch (Exception e){
+			return false;
+		}
 	}
 	
 	private boolean willAttack(Point start,Point end,moveType type)
