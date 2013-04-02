@@ -215,7 +215,7 @@ public class GameController implements GameTimerListener {
 				for(GameControllerListener listener : listeners){
 					listener.onGameWin(winner);
 				}
-				PlayAgain dial = new PlayAgain(new JFrame(), true, winner);
+				PlayAgain dial = new PlayAgain(vBoard, true, winner);
 				dial.setVisible(true);
 				if(dial.playAgain()){
 					board.resetBoard();
@@ -273,7 +273,7 @@ public class GameController implements GameTimerListener {
 	 */
 	@Override
 	public void TimesUp() {
-		final TimesUp panel = new TimesUp(new JFrame(), true);				
+		final TimesUp panel = new TimesUp(vBoard, true);				
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (dim.width - panel.getWidth())/2;
     	int y = (dim.height - panel.getHeight())/2;

@@ -43,12 +43,7 @@ public class GameTimer extends Thread{
 				listeners.get(i).TimesUp();
 			}
 			valid = false;
-			while(!valid){
-				try {
-					sleep(50);
-				} catch (InterruptedException e) {
-				}
-			}
+			while(!valid){}
 		}
 	}
 	
