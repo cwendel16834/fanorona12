@@ -108,12 +108,13 @@ public class NetworkGame extends Thread implements GameControllerListener{
 						out.println("WINNER");
 					}
 				} else if(inputLine.equals("TIME")){
-					
+										
 				} else if(inputLine.equals("WINNER")){
-					//we win!
+					controller.endGame(true);//we win!
 					controller.incrementWins(localPlayer);
 				} else if(inputLine.equals("LOSER")){
 					// we lose :(
+					controller.endGame(false);
 					controller.incrementWins(localPlayer == Team.BLACK ? Team.WHITE : Team.BLACK);
 				} else if(inputLine.startsWith("INFO")){
 					String[] params = inputLine.split(" ");
@@ -279,10 +280,14 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		if(!isServer)
 			return;
 		out.println("TIME");
-		if(controller.getTurn() == localPlayer)
+		if(controller.getTurn() == localPlayer){
 			out.println("WINNER");
-		else
+			controller.endGame(false);
+		}
+		else{
 			out.println("LOSER");
+			controller.endGame(true);
+		}
 	}
 	
 	@Override

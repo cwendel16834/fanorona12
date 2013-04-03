@@ -309,6 +309,11 @@ public class GameController implements GameTimerListener {
 		gameTimer.reset();
 		vBoard.updateBoard();
 		changeTurn();
+		for(GameControllerListener listener : listeners){
+			if(listener == null)
+				continue;
+			listener.onTimeUp();
+		}
 	}
 
 	/*
