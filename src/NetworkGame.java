@@ -110,11 +110,11 @@ public class NetworkGame extends Thread implements GameControllerListener{
 				} else if(inputLine.equals("TIME")){
 										
 				} else if(inputLine.equals("WINNER")){
-					controller.endGame(true);//we win!
+					controller.endGame(false);//we win!
 					controller.incrementWins(localPlayer);
 				} else if(inputLine.equals("LOSER")){
 					// we lose :(
-					controller.endGame(false);
+					controller.endGame(true);
 					controller.incrementWins(localPlayer == Team.BLACK ? Team.WHITE : Team.BLACK);
 				} else if(inputLine.startsWith("INFO")){
 					String[] params = inputLine.split(" ");
