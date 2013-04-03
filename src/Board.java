@@ -451,7 +451,7 @@ public class Board
 							if(isPaika(loc, newPoint)) 
 								moves.add(new Move(loc, newPoint, moveType.PAIKA));
 							else if (isRetreating(loc, newPoint, moveType.RETREAT)) 
-								captures.add(new Move(loc, newPoint, moveType.PAIKA));
+								captures.add(new Move(loc, newPoint, moveType.RETREAT));
 							else 
 								captures.add(new Move(loc, newPoint, moveType.ADVANCE));
 						}

@@ -27,9 +27,9 @@ public class AI implements GameControllerListener{
 			if(move == null)
 				return;
 			try {
-				moveAgain = controller.move(move.start, move.end);
+				moveAgain = controller.move(move.start, move.end, move.type);
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}
