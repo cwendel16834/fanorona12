@@ -360,7 +360,7 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 								controller.move(reversePoint(movingPiece), reversePoint(p), moveType.RETREAT);
 							}
 						} catch(Exception e3){
-							System.out.println(e3.getLocalizedMessage());
+							controller.debug(e3.getLocalizedMessage());
 						}
 						updateBoard();
 					}

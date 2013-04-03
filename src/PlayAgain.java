@@ -32,6 +32,13 @@ public class PlayAgain extends JDialog {
 	/**
      * Creates new form PlayAgain
      */
+	public PlayAgain(Frame parent, boolean m, String text){
+		super(parent, m);
+		isText = true;
+		this.text = text;
+		initComponents();
+	}
+	
     public PlayAgain(Frame parent, boolean m, Team winner) {
     	super(parent, m);
     	this.winner = winner;
@@ -49,17 +56,20 @@ public class PlayAgain extends JDialog {
         jToggleButton1.setText("jToggleButton1");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        switch(winner){
-		case BLACK:
-			jLabel1.setText("Black Wins!");
-			break;
-		case WHITE:
-			jLabel1.setText("White Wins!");
-			break;
-		default:
-			jLabel1.setText("Game was a Tie!");
-			break;
-        
+        if(isText){
+        	jLabel1.setText(text);
+        } else {
+	        switch(winner){
+			case BLACK:
+				jLabel1.setText("Black Wins!");
+				break;
+			case WHITE:
+				jLabel1.setText("White Wins!");
+				break;
+			default:
+				jLabel1.setText("Game was a Tie!");
+				break;
+	        }
         }
         
 
@@ -129,7 +139,9 @@ public class PlayAgain extends JDialog {
     	return playAgain;
     }
 
-
+    
+    private boolean isText = false;
+    private String text;
     private boolean playAgain = false;
     private Team winner;
 	private JButton yesButton;

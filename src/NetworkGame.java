@@ -40,10 +40,10 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		this.port = port;
 	}
 	
-	public void showConnectionSettings(){
+	public void showConnectionSettings(boolean ipEnabled){
 		if(!enabled)
 			return;
-		NetworkPanel panel = new NetworkPanel(new JFrame(), true, this);
+		NetworkPanel panel = new NetworkPanel(new JFrame(), true, this, ipEnabled);
 		panel.setVisible(true);
 	}
 	
@@ -276,12 +276,13 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		// TODO Auto-generated method stub
 		if(!ready || !enabled)
 			return;
-		if(controller.getTurn() == localPlayer)
-			return;
 		if(!isServer)
 			return;
 		out.println("TIME");
-		out.println("LOSER");
+		if(controller.getTurn() == localPlayer)
+			out.println("WINNER");
+		else
+			out.println("LOSER");
 	}
 	
 	@Override
@@ -329,7 +330,11 @@ class NetworkPanel extends JDialog {
 	/**
      * Creates new form NetworkPanel
      */
-    public NetworkPanel(Frame parent, boolean modal, NetworkGame net) {
+	public NetworkPanel(Frame parent, boolean modal, NetworkGame net){
+		this(parent, modal, net, false);
+	}
+	
+    public NetworkPanel(Frame parent, boolean modal, NetworkGame net, boolean diableIp) {
         super(parent, modal);
         network = net;
         initComponents();
@@ -357,6 +362,10 @@ class NetworkPanel extends JDialog {
 
         portLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         portLabel.setText("Port:");
+        if(disableIp){
+        	serverIp.setEnabled(false);
+        	serverIp.setEditable(false);
+        }
 
         okButton.setText("Ok");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -406,7 +415,8 @@ class NetworkPanel extends JDialog {
     	setLocation(x,y);
     }// </editor-fold>                        
 
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify
+    private boolean disableIp;
     private JTextField port;
     private JButton okButton;
     private JLabel portLabel;

@@ -39,6 +39,7 @@ public class GameController implements GameTimerListener {
     private NetworkGame network;
     
     private Team currentTurn = Team.WHITE;
+    public boolean isNetworked = false;
     
     //For network games and listeners
     private ArrayList<GameControllerListener> listeners = new ArrayList<GameControllerListener>();
@@ -56,6 +57,20 @@ public class GameController implements GameTimerListener {
 		gameTimer = new GameTimer(15000);
 		gameTimer.setActionListener(this);
 		gameAI = new AI(this, Team.BLACK, false);
+	}
+	
+	public void endGame(boolean loser){
+		PlayAgain dial;
+		if(loser)
+			 dial= new PlayAgain(new JFrame(), true, "You Lost");
+		else
+			dial = new PlayAgain(new JFrame(), true, "You Win");
+		dial.setVisible(true);
+		if(dial.playAgain()){
+			reset();
+		} else {
+			System.exit(0);
+		}
 	}
 	
 	public void reset(){
@@ -78,13 +93,16 @@ public class GameController implements GameTimerListener {
 		showOptions(false);
 		if(settings.gameType == GameType.MULT_SERVER){
 			network = new NetworkGame(this, true, true);
+			network.showConnectionSettings(false);
+			isNetworked = true;
 		} else if(settings.gameType == GameType.MULT_CLIENT){
 			network = new NetworkGame(this, false, true);
+			network.showConnectionSettings(true);
+			isNetworked = true;
 		} else {
 			gameAI = new AI(this, Team.BLACK, true);
 			network = new NetworkGame(this, false, false);
 		}
-		network.showConnectionSettings();
 		network.start();
 	}
 	
@@ -215,7 +233,7 @@ public class GameController implements GameTimerListener {
 					listener.onNextTurn();
 			}
 			
-			System.out.println("About to check gameover");
+			debug("About to check gameover");
 			
 			Team winner = board.isGameOver();
 			if(winner != null){
