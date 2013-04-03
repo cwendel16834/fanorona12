@@ -185,7 +185,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		try{
 			for(int i=0;i<moveStrings.length;i++){
 				moveString = moveStrings[i].trim().split(" ");
-				if(moveString.length != 5){
+				if(moveString.length != 5 || moveString.length != 3){
 					controller.debug("Invalid Move String length: " + moveString.length);
 					return false;
 				}
@@ -204,7 +204,10 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					type = moveType.NONE;
 				}
 				start = new Point(Integer.parseInt(moveString[1]), Integer.parseInt(moveString[2]));
-				end = new Point(Integer.parseInt(moveString[3]), Integer.parseInt(moveString[4]));
+				if(type == moveType.SACRIFICE)
+					end = null;
+				else
+					end = new Point(Integer.parseInt(moveString[3]), Integer.parseInt(moveString[4]));
 				controller.debug(moveString[0] + " " + (start.x-1) + " " + (start.y-1) + " " + (end.x-1) + " " + (end.y-1));
 				
 				boolean bool = controller.move(new Point(start.x-1, start.y-1), new Point(end.x-1, end.y-1), type);
@@ -262,8 +265,13 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					break;
 				
 				}
-				outputLine += moveChar + " " + (move.start.x+1) + " " 
-						+ (move.start.y+1) + " " + (move.end.x+1) + " " + (move.end.y+1);
+				if(move.type == moveType.SACRIFICE){
+					outputLine += moveChar + " " + (move.start.x+1) + " " + (move.start.y+1);
+				} else {
+					outputLine += moveChar + " " + (move.start.x+1) + " " 
+							+ (move.start.y+1) + " " + (move.end.x+1) + " " + (move.end.y+1);
+				}
+				
 				if(i != moves.size()-1)
 					outputLine += " + ";
 			}
