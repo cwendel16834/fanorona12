@@ -185,7 +185,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		try{
 			for(int i=0;i<moveStrings.length;i++){
 				moveString = moveStrings[i].trim().split(" ");
-				if(moveString.length != 5 || moveString.length != 3){
+				if(moveString.length != 5 && moveString.length != 3){
 					controller.debug("Invalid Move String length: " + moveString.length);
 					return false;
 				}
@@ -208,9 +208,13 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					end = null;
 				else
 					end = new Point(Integer.parseInt(moveString[3]), Integer.parseInt(moveString[4]));
-				controller.debug(moveString[0] + " " + (start.x-1) + " " + (start.y-1) + " " + (end.x-1) + " " + (end.y-1));
+				//controller.debug(moveString[0] + " " + (start.x-1) + " " + (start.y-1) + " " + (end.x-1) + " " + (end.y-1));
 				
-				boolean bool = controller.move(new Point(start.x-1, start.y-1), new Point(end.x-1, end.y-1), type);
+				boolean bool;
+				if(end == null)
+					bool = controller.move(new Point(start.x-1, start.y-1), null, type);
+				else
+					bool = controller.move(new Point(start.x-1, start.y-1), new Point(end.x-1, end.y-1), type);
 				if(!bool && i != moveStrings.length-1){
 					return false;
 				}
