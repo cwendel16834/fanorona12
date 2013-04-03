@@ -285,7 +285,7 @@ public class Board
 				}
 			}
 		}
-		System.out.format("White: %d, Black: %d\n", whitePieces, blackPieces );
+
 		if(whitePieces == 0)
 			return Piece.Team.BLACK;
 		if(blackPieces == 0)

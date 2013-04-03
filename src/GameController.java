@@ -228,8 +228,6 @@ public class GameController implements GameTimerListener {
 			gameTimer.reset();
 			changeTurn();
 			
-			debug("About to check gameover");
-			
 			Team winner = board.isGameOver();
 			if(winner != null){
 				incrementWins(winner);
