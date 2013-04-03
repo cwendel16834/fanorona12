@@ -36,7 +36,7 @@ public class GameController implements GameTimerListener {
 	private int whiteWins = 0;
     private int blackWins = 0;
     private Settings settings;
-    private NetworkGame network;
+    public NetworkGame network;
     
     private Team currentTurn = Team.WHITE;
     public boolean isNetworked = false;

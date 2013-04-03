@@ -282,11 +282,11 @@ public class NetworkGame extends Thread implements GameControllerListener{
 		out.println("TIME");
 		if(controller.getTurn() == localPlayer){
 			out.println("WINNER");
-			controller.endGame(false);
+			controller.endGame(true);
 		}
 		else{
 			out.println("LOSER");
-			controller.endGame(true);
+			controller.endGame(false);
 		}
 	}
 	
@@ -320,7 +320,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 	private GameController controller;
 	private boolean isServer;
 	private boolean enabled;
-	private Team localPlayer = Team.WHITE;
+	public Team localPlayer = Team.WHITE;
 	
 	
 	

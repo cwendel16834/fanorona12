@@ -279,7 +279,8 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
     // End of variables declaration                   
 	@Override
 	public void mouseDragged(MouseEvent e) {
-
+		if(controller.isNetworked && controller.getTurn() != controller.network.localPlayer)
+			return;
 		if(moving){
 			boardPanel.setPiecePosition(movingPiece, e.getPoint());
 //			boardPieces[movingPiece.x][movingPiece.y].x = e.getX();
@@ -295,6 +296,9 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		if(controller.isNetworked && controller.getTurn() != controller.network.localPlayer)
+			return;
+		
 		Point p = boardPanel.closestPiece(e.getPoint());
 		if(boardPanel.PieceExists(p)){
 			if(controller.getTurn() != Team.WHITE && controller.getBoard().getBoard()[p.x][p.y].getTeam() == Team.WHITE)
@@ -322,6 +326,9 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		if(controller.isNetworked && controller.getTurn() != controller.network.localPlayer)
+			return;
+		
 		Point p = e.getPoint();
 		//get starting position here
 		if(boardPanel.PieceExists((movingPiece = boardPanel.closestPiece(p)))){
@@ -339,6 +346,9 @@ public class VisualBoard extends JFrame implements MouseListener, MouseMotionLis
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// check if the movement was valid using starting position and ending position
+		if(controller.isNetworked && controller.getTurn() != controller.network.localPlayer)
+			return;
+		
 		if(!moving)
 			return;
 		moving = false;
