@@ -225,13 +225,8 @@ public class GameController implements GameTimerListener {
 			oldMoves = new ArrayList<Move>(moves);
 			//oldMoves = moves;
 			moves.clear();
-			changeTurn();
-			
 			gameTimer.reset();
-			for(GameControllerListener listener : listeners){
-				if(listener != null)
-					listener.onNextTurn();
-			}
+			changeTurn();
 			
 			debug("About to check gameover");
 			
@@ -291,6 +286,10 @@ public class GameController implements GameTimerListener {
 		currentTurn = (currentTurn == Team.WHITE)	? currentTurn = Team.BLACK : Team.WHITE;
 		String text = currentTurn == Team.WHITE ? "White" : "Black";
 		vBoard.setTurn(text);
+		for(GameControllerListener listener : listeners){
+			if(listener != null)
+				listener.onNextTurn();
+		}
 	}
 	
 	/*
