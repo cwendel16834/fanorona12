@@ -1,7 +1,9 @@
 package twelve.team;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -136,7 +138,7 @@ public class NetworkGame extends Thread implements GameControllerListener{
 					controller.showBoard();
 					out.println("OK");
 					
-				} else if(inputLine.startsWith("A") || inputLine.startsWith("W") || inputLine.startsWith("S") || inputLine.startsWith("P")){
+				} else if(inputLine.startsWith("A") || inputLine.startsWith("R") || inputLine.startsWith("S") || inputLine.startsWith("P")){
 					if(!recievedOk){
 						//client did not acknowledge last message
 						controller.debug("Client did not acknowledge last message");
@@ -397,6 +399,11 @@ class NetworkPanel extends JDialog {
         );
 
         pack();
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    	int x = (dim.width - getWidth())/2;
+    	int y = (dim.height - getHeight())/2;
+    	setLocation(x,y);
     }// </editor-fold>                        
 
     // Variables declaration - do not modify                     

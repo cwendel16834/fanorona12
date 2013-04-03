@@ -4,7 +4,9 @@
  */
 package twelve.team;
 
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -86,12 +88,12 @@ public class PlayAgain extends JDialog {
         	
         });
 
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
@@ -99,11 +101,8 @@ public class PlayAgain extends JDialog {
                         .addComponent(yesButton)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(noButton)))
-                .addContainerGap())
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {yesButton, noButton});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -111,13 +110,19 @@ public class PlayAgain extends JDialog {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(yesButton)
                     .addComponent(noButton))
-                .addContainerGap())
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        pack();       
         
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    	int x = (dim.width - getWidth())/2;
+    	int y = (dim.height - getHeight())/2;
+    	setLocation(x,y);
     }
     
     public boolean playAgain(){

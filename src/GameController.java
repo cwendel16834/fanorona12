@@ -226,7 +226,7 @@ public class GameController implements GameTimerListener {
 				PlayAgain dial = new PlayAgain(vBoard, true, winner);
 				dial.setVisible(true);
 				if(dial.playAgain()){
-					board.resetBoard();
+					reset();
 					for(GameControllerListener listener : listeners){
 						listener.newGame();
 					}
@@ -241,7 +241,7 @@ public class GameController implements GameTimerListener {
 				PlayAgain dial = new PlayAgain(new JFrame(), true, winner);
 				dial.setVisible(true);
 				if(dial.playAgain()){
-					board.resetBoard();
+					reset();
 					for(GameControllerListener listener : listeners){
 						listener.newGame();
 					}

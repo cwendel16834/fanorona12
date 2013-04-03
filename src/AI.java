@@ -24,6 +24,8 @@ public class AI implements GameControllerListener{
 		boolean moveAgain = true;
 		while(moveAgain){
 			Move move = controller.getBoard().getRandomMove(AITeam);
+			if(move == null)
+				return;
 			try {
 				moveAgain = controller.move(move.start, move.end);
 			} catch (Exception e) {
